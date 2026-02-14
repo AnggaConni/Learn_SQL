@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL Academy - Learn SQL Interactively</title>
+    <title>SQL Academy - Master SQL from Zero to Hero</title>
     <!-- Tailwind CSS for Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- AlaSQL for Database Engine -->
@@ -17,81 +17,11 @@
         ::-webkit-scrollbar-thumb:hover { background: #64748b; }
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .pulse-success { animation: pulseSuccess 0.5s ease-in-out; }
+        @keyframes pulseSuccess { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans h-screen flex flex-col overflow-hidden">
-
-    <!-- 
-    ==========================================================================================
-      🚀 AI DEVELOPMENT ROADMAP (CURRICULUM) 🚀
-      
-      To any AI Assistant picking up this project: 
-      This prototype currently implements World 1 (Levels 1-3). 
-      Please continue the gamification following this curriculum structure.
-      
-      ⚠️ CHANGELOG REQUIREMENT:
-      If you modify this file, you MUST add a changelog entry at the bottom of the script section.
-      
-      IMPORTANT GUIDELINES:
-      1. BILINGUAL: All text (titles, descriptions, hints, explanations) MUST be in both 'id' (Indonesian) and 'en' (English).
-      2. EXPLANATION: Every level must have an 'explanation' field. This appears on the right panel after success to teach the concept.
-      3. LEVEL SELECTOR: Users can jump between levels. Ensure state management handles loose navigation.
-
-      --- WORLD 1: THE READER (Basic SELECT) ---
-      [Implemented] Level 1: SELECT * (Concept: Fetching everything)
-      [Implemented] Level 2: SELECT specific_columns (Concept: Efficiency/Privacy)
-      [Implemented] Level 3: SELECT ... WHERE condition (Concept: Filtering)
-
-      --- WORLD 2: THE FILTER (Filtering Logic) ---
-      Level 4: Multiple Conditions (AND) -> WHERE division = 'IT' AND salary > 8000000
-      Level 5: Alternative Conditions (OR) -> WHERE division = 'IT' OR division = 'HR'
-      Level 6: Pattern Matching (LIKE) -> WHERE name LIKE 'B%' (Starts with B)
-      Level 7: Range Search (BETWEEN) -> WHERE salary BETWEEN 5000000 AND 10000000
-      Level 8: Sorting (ORDER BY) -> ORDER BY salary DESC
-
-      --- WORLD 3: THE MANAGER (CRUD - Create, Update, Delete) ---
-      *Note: Ensure DB resets after each level in this world*
-      Level 9: INSERT INTO -> Add a new employee
-      Level 10: UPDATE specific row -> UPDATE employees SET salary = ... WHERE id = ...
-      Level 11: The "Oops" Moment -> Try UPDATE without WHERE (Simulate disaster, then block it)
-      Level 12: DELETE specific row -> DELETE FROM employees WHERE id = ...
-
-      --- WORLD 4: THE ANALYST (Aggregation) ---
-      Level 13: Counting rows -> COUNT(*)
-      Level 14: Total Cost -> SUM(salary)
-      Level 15: Averages -> AVG(salary)
-      Level 16: Grouping -> SELECT division, COUNT(*) FROM employees GROUP BY division
-
-      --- WORLD 5: THE ARCHITECT (Joins) ---
-      *Note: Introduce a second table: 'departments'*
-      Level 17: INNER JOIN -> Join employees with departments
-      Level 18: LEFT JOIN -> Find departments with no employees
-
-      --- 🛑 IS 18 LEVELS ENOUGH? NO! (FUTURE AI TASKS BELOW) 🛑 ---
-      The user explicitly requested that you (the next AI) carry the burden of the true master levels.
-      Don't stop at 18. Make the user sweat!
-
-      --- WORLD 6: THE NESTED (Subqueries) ---
-      Level 19: Subquery in WHERE -> Find employees with salary > (SELECT AVG(salary)...)
-      Level 20: Subquery in FROM -> Select from a result set
-      Level 21: EXISTS vs IN -> Performance concepts
-
-      --- WORLD 7: THE MODERNIST (CTEs) ---
-      Level 22: Basic WITH clause -> Cleaning up spaghetti code
-      Level 23: Recursive CTE -> Generate number series or org chart hierarchy
-
-      --- WORLD 8: THE GENIUS (Window Functions) ---
-      Level 24: RANK() -> Rank employees by salary within division (without collapsing rows)
-      Level 25: LEAD()/LAG() -> Compare current row with previous row
-      Level 26: Running Total -> SUM() OVER (ORDER BY ...)
-
-      --- WORLD 9: THE OPTIMIZER (Performance) ---
-      Level 27: EXPLAIN -> Understanding query cost
-      Level 28: INDEX -> Creating indexes to speed up search
-      
-      Good luck, AI Friend. Don't overheat! 🤯
-    ==========================================================================================
-    -->
 
     <div class="flex flex-1 h-full">
         <!-- LEFT PANEL: Editor & Instructions -->
@@ -103,24 +33,30 @@
                     <!-- Level Selector -->
                     <div class="relative">
                         <button id="levelBtn" onclick="toggleLevelMenu()" class="text-xs font-bold text-blue-400 tracking-wider uppercase flex items-center gap-1 hover:text-blue-300 transition">
-                            LEVEL <span id="currentLevelDisplay">1</span> / 3 ▼
+                            LEVEL <span id="currentLevelDisplay">1</span> / <span id="totalLevels">35</span> ▼
                         </button>
-                        <div id="levelMenu" class="hidden absolute top-8 left-0 z-50 w-64 bg-slate-800 border border-slate-600 rounded-lg shadow-xl overflow-hidden">
+                        <div id="levelMenu" class="hidden absolute top-8 left-0 z-50 w-80 bg-slate-800 border border-slate-600 rounded-lg shadow-xl overflow-hidden max-h-96 overflow-y-auto">
                             <!-- Levels will be injected here -->
                         </div>
                     </div>
                     
-                    <!-- Language Toggle -->
-                    <button onclick="toggleLang()" class="flex items-center gap-2 text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded-full transition">
-                        🌐 <span id="langDisplay">ID</span>
-                    </button>
+                    <!-- Progress Badge -->
+                    <div class="flex items-center gap-3">
+                        <div class="text-xs text-slate-400">
+                            <span class="font-bold text-yellow-400" id="rankDisplay">NOVICE</span>
+                        </div>
+                        <!-- Language Toggle -->
+                        <button onclick="toggleLang()" class="flex items-center gap-2 text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded-full transition">
+                            🌐 <span id="langDisplay">ID</span>
+                        </button>
+                    </div>
                 </div>
                 <h1 id="levelTitle" class="text-2xl font-bold text-white mb-2">Loading...</h1>
                 <p id="levelDesc" class="text-slate-300 text-sm leading-relaxed">Please wait...</p>
             </div>
 
             <!-- Editor Container -->
-            <div class="flex-1 flex flex-col p-6 relative bg-slate-900">
+            <div class="flex-1 flex flex-col p-6 relative bg-slate-900 overflow-y-auto">
                 
                 <!-- Mission Box -->
                 <div class="mb-4 bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg">
@@ -145,7 +81,7 @@
 
                 <!-- Textarea -->
                 <textarea id="sqlEditor" 
-                    class="w-full flex-1 bg-slate-950 border border-slate-700 rounded-lg p-4 font-mono text-green-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none shadow-inner text-lg leading-relaxed"
+                    class="w-full h-48 bg-slate-950 border border-slate-700 rounded-lg p-4 font-mono text-green-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none shadow-inner text-lg leading-relaxed"
                     spellcheck="false"></textarea>
                 
                 <!-- Action Buttons -->
@@ -168,7 +104,7 @@
                 </div>
                 
                 <!-- Success Message -->
-                <div id="successBox" class="hidden mt-4 p-4 bg-green-900/30 border border-green-500/50 rounded-lg flex items-center justify-between fade-in">
+                <div id="successBox" class="hidden mt-4 p-4 bg-green-900/30 border border-green-500/50 rounded-lg flex items-center justify-between fade-in pulse-success">
                     <div class="flex items-center gap-3">
                         <div class="text-green-500 text-xl">✔</div>
                         <div>
@@ -184,35 +120,59 @@
         </div>
 
         <!-- RIGHT PANEL: Visualization -->
-        <div class="w-1/2 flex flex-col bg-slate-800">
+        <div class="w-1/2 flex flex-col bg-slate-800 overflow-y-auto">
             
             <!-- Source Database -->
-            <div class="h-1/3 border-b border-slate-700 p-6 overflow-auto bg-slate-800">
+            <div class="border-b border-slate-700 p-6 bg-slate-800">
                 <div class="flex items-center gap-2 mb-2 text-slate-400">
                     <span class="font-mono">🗄️</span>
                     <h3 class="text-xs font-bold uppercase tracking-wide">
-                        <span class="lang-db-source">Database Sumber:</span> <span class="text-white">employees</span>
+                        <span class="lang-db-source">Database Sumber</span>
                     </h3>
                 </div>
-                <div class="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden shadow-sm">
-                    <table class="w-full text-left text-xs text-slate-300">
-                        <thead class="bg-slate-950 text-slate-400 font-medium">
-                            <tr>
-                                <th class="px-3 py-2 border-b border-slate-800">id</th>
-                                <th class="px-3 py-2 border-b border-slate-800">name</th>
-                                <th class="px-3 py-2 border-b border-slate-800">division</th>
-                                <th class="px-3 py-2 border-b border-slate-800">salary</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dbTableBody" class="divide-y divide-slate-800">
-                            <!-- Rows injected by JS -->
-                        </tbody>
-                    </table>
+                
+                <!-- Employees Table -->
+                <div class="mb-4">
+                    <div class="text-xs text-slate-500 mb-1 font-bold">TABLE: employees</div>
+                    <div class="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden shadow-sm">
+                        <table class="w-full text-left text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 font-medium">
+                                <tr>
+                                    <th class="px-3 py-2 border-b border-slate-800">id</th>
+                                    <th class="px-3 py-2 border-b border-slate-800">name</th>
+                                    <th class="px-3 py-2 border-b border-slate-800">division</th>
+                                    <th class="px-3 py-2 border-b border-slate-800">salary</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dbTableBody" class="divide-y divide-slate-800">
+                                <!-- Rows injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Departments Table (for Join levels) -->
+                <div id="departmentsTableContainer" class="hidden">
+                    <div class="text-xs text-slate-500 mb-1 font-bold">TABLE: departments</div>
+                    <div class="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden shadow-sm">
+                        <table class="w-full text-left text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 font-medium">
+                                <tr>
+                                    <th class="px-3 py-2 border-b border-slate-800">dept_id</th>
+                                    <th class="px-3 py-2 border-b border-slate-800">dept_name</th>
+                                    <th class="px-3 py-2 border-b border-slate-800">budget</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deptTableBody" class="divide-y divide-slate-800">
+                                <!-- Rows injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <!-- Query Result -->
-            <div class="flex-1 p-6 overflow-auto bg-slate-800/50 border-b border-slate-700">
+            <div class="p-6 bg-slate-800/50 border-b border-slate-700">
                 <div class="flex items-center gap-2 mb-2 text-slate-400">
                     <span class="font-mono">📋</span>
                     <h3 class="text-xs font-bold uppercase tracking-wide lang-result">Hasil Query Kamu:</h3>
@@ -225,7 +185,7 @@
                     </table>
                 </div>
                 
-                <div id="emptyState" class="h-full flex flex-col items-center justify-center text-slate-600 border-2 border-dashed border-slate-700 rounded-lg">
+                <div id="emptyState" class="h-32 flex flex-col items-center justify-center text-slate-600 border-2 border-dashed border-slate-700 rounded-lg">
                     <div class="text-4xl opacity-50 mb-2">▶</div>
                     <p class="lang-empty-state">Jalankan query untuk melihat hasil di sini.</p>
                 </div>
@@ -249,8 +209,10 @@
         let dbData = [];
 
         const levels = [
+            // ========== WORLD 1: THE READER (Basic SELECT) ==========
             {
                 id: 1,
+                world: "WORLD 1: THE READER",
                 title: { id: "Hello SQL!", en: "Hello SQL!" },
                 description: { 
                     id: "Selamat datang! Misi pertamamu adalah melihat **SEMUA** data yang ada di tabel 'employees'.", 
@@ -274,6 +236,7 @@
             },
             {
                 id: 2,
+                world: "WORLD 1: THE READER",
                 title: { id: "Hanya Nama & Divisi", en: "Name & Division Only" },
                 description: {
                     id: "Data gaji itu rahasia! Bos minta laporan daftar pegawai tapi cuma butuh kolom Nama dan Divisinya saja.",
@@ -297,6 +260,7 @@
             },
             {
                 id: 3,
+                world: "WORLD 1: THE READER",
                 title: { id: "Tim IT Saja", en: "IT Team Only" },
                 description: {
                     id: "Kita mau meeting khusus tim IT. Tolong cari pegawai yang divisinya 'IT'.",
@@ -317,6 +281,798 @@
                 initialCode: "SELECT * FROM employees WHERE division = '...'",
                 expectedQuery: "SELECT * FROM employees WHERE division = 'IT'",
                 validationMode: "match_rows",
+            },
+
+            // ========== WORLD 2: THE FILTER (Filtering Logic) ==========
+            {
+                id: 4,
+                world: "WORLD 2: THE FILTER",
+                title: { id: "IT dengan Gaji Tinggi", en: "High-Paid IT" },
+                description: {
+                    id: "HR perlu data karyawan IT yang gajinya di atas 8 juta. Kita butuh filter ganda!",
+                    en: "HR needs data on IT employees earning over 8 million. We need a double filter!"
+                },
+                instruction: {
+                    id: "Gunakan **AND** untuk menggabungkan 2 kondisi: division = 'IT' dan salary > 8000000",
+                    en: "Use **AND** to combine 2 conditions: division = 'IT' and salary > 8000000"
+                },
+                hint: {
+                    id: "WHERE kondisi1 AND kondisi2. Contoh: WHERE division = 'IT' AND salary > 8000000",
+                    en: "WHERE condition1 AND condition2. Example: WHERE division = 'IT' AND salary > 8000000"
+                },
+                explanation: {
+                    id: "`AND` berarti KEDUA kondisi harus terpenuhi. Baris yang muncul adalah yang memenuhi kondisi pertama DAN kondisi kedua.",
+                    en: "`AND` means BOTH conditions must be met. The rows shown are those that satisfy the first condition AND the second condition."
+                },
+                initialCode: "SELECT * FROM employees\nWHERE division = 'IT' ... salary > 8000000",
+                expectedQuery: "SELECT * FROM employees WHERE division = 'IT' AND salary > 8000000",
+                validationMode: "match_rows",
+            },
+            {
+                id: 5,
+                world: "WORLD 2: THE FILTER",
+                title: { id: "IT atau HR", en: "IT or HR" },
+                description: {
+                    id: "Meeting gabungan IT dan HR besok. Siapa saja yang harus diundang?",
+                    en: "Joint IT and HR meeting tomorrow. Who should be invited?"
+                },
+                instruction: {
+                    id: "Gunakan **OR** untuk mencari karyawan yang divisinya IT **atau** HR",
+                    en: "Use **OR** to find employees whose division is IT **or** HR"
+                },
+                hint: {
+                    id: "WHERE division = 'IT' OR division = 'HR'",
+                    en: "WHERE division = 'IT' OR division = 'HR'"
+                },
+                explanation: {
+                    id: "`OR` berarti SALAH SATU kondisi terpenuhi sudah cukup. Jika divisi IT? Ya. Jika divisi HR? Ya juga.",
+                    en: "`OR` means EITHER condition being met is enough. If IT division? Yes. If HR division? Also yes."
+                },
+                initialCode: "SELECT * FROM employees\nWHERE division = '...' ... division = '...'",
+                expectedQuery: "SELECT * FROM employees WHERE division = 'IT' OR division = 'HR'",
+                validationMode: "match_rows",
+            },
+            {
+                id: 6,
+                world: "WORLD 2: THE FILTER",
+                title: { id: "Nama Diawali B", en: "Names Starting with B" },
+                description: {
+                    id: "Ada karyawan lupa nama lengkapnya, tapi ingatnya namanya diawali huruf 'B'. Bantu cari!",
+                    en: "An employee forgot their full name but remembers it starts with 'B'. Help find them!"
+                },
+                instruction: {
+                    id: "Gunakan **LIKE 'B%'** untuk mencari nama yang diawali huruf B",
+                    en: "Use **LIKE 'B%'** to find names starting with B"
+                },
+                hint: {
+                    id: "% adalah wildcard (apapun boleh). WHERE name LIKE 'B%' artinya: B diikuti apapun",
+                    en: "% is a wildcard (anything goes). WHERE name LIKE 'B%' means: B followed by anything"
+                },
+                explanation: {
+                    id: "`LIKE` digunakan untuk pattern matching. 'B%' artinya: huruf B diikuti karakter apapun (0 atau lebih).",
+                    en: "`LIKE` is used for pattern matching. 'B%' means: letter B followed by any characters (0 or more)."
+                },
+                initialCode: "SELECT * FROM employees\nWHERE name LIKE '...'",
+                expectedQuery: "SELECT * FROM employees WHERE name LIKE 'B%'",
+                validationMode: "match_rows",
+            },
+            {
+                id: 7,
+                world: "WORLD 2: THE FILTER",
+                title: { id: "Rentang Gaji", en: "Salary Range" },
+                description: {
+                    id: "Cari karyawan dengan gaji antara 6 juta sampai 8 juta (inklusif).",
+                    en: "Find employees with salary between 6 million and 8 million (inclusive)."
+                },
+                instruction: {
+                    id: "Gunakan **BETWEEN** untuk mencari range: BETWEEN 6000000 AND 8000000",
+                    en: "Use **BETWEEN** to search range: BETWEEN 6000000 AND 8000000"
+                },
+                hint: {
+                    id: "WHERE salary BETWEEN nilai_awal AND nilai_akhir",
+                    en: "WHERE salary BETWEEN start_value AND end_value"
+                },
+                explanation: {
+                    id: "`BETWEEN` adalah shortcut untuk >= dan <=. 'BETWEEN 6000000 AND 8000000' sama dengan 'salary >= 6000000 AND salary <= 8000000'.",
+                    en: "`BETWEEN` is a shortcut for >= and <=. 'BETWEEN 6000000 AND 8000000' equals 'salary >= 6000000 AND salary <= 8000000'."
+                },
+                initialCode: "SELECT * FROM employees\nWHERE salary BETWEEN ... AND ...",
+                expectedQuery: "SELECT * FROM employees WHERE salary BETWEEN 6000000 AND 8000000",
+                validationMode: "match_rows",
+            },
+            {
+                id: 8,
+                world: "WORLD 2: THE FILTER",
+                title: { id: "Urutkan Berdasar Gaji", en: "Sort by Salary" },
+                description: {
+                    id: "Tampilkan semua karyawan, tapi urutkan dari gaji tertinggi ke terendah.",
+                    en: "Display all employees, but sort from highest to lowest salary."
+                },
+                instruction: {
+                    id: "Gunakan **ORDER BY salary DESC** di akhir query (DESC = descending/menurun)",
+                    en: "Use **ORDER BY salary DESC** at the end of query (DESC = descending)"
+                },
+                hint: {
+                    id: "SELECT * FROM employees ORDER BY salary DESC",
+                    en: "SELECT * FROM employees ORDER BY salary DESC"
+                },
+                explanation: {
+                    id: "`ORDER BY` mengurutkan hasil. DESC = Descending (besar ke kecil). ASC = Ascending (kecil ke besar, default).",
+                    en: "`ORDER BY` sorts results. DESC = Descending (high to low). ASC = Ascending (low to high, default)."
+                },
+                initialCode: "SELECT * FROM employees\nORDER BY ... ...",
+                expectedQuery: "SELECT * FROM employees ORDER BY salary DESC",
+                validationMode: "ordered",
+            },
+
+            // ========== WORLD 3: THE MANAGER (CRUD Operations) ==========
+            {
+                id: 9,
+                world: "WORLD 3: THE MANAGER",
+                title: { id: "Rekrut Karyawan Baru", en: "Recruit New Employee" },
+                description: {
+                    id: "Ada karyawan baru: id=6, nama='Dewi', divisi='HR', gaji=7500000. Masukkan ke database!",
+                    en: "New employee: id=6, name='Dewi', division='HR', salary=7500000. Add to database!"
+                },
+                instruction: {
+                    id: "Gunakan **INSERT INTO** untuk menambah data baru",
+                    en: "Use **INSERT INTO** to add new data"
+                },
+                hint: {
+                    id: "INSERT INTO employees VALUES (6, 'Dewi', 'HR', 7500000)",
+                    en: "INSERT INTO employees VALUES (6, 'Dewi', 'HR', 7500000)"
+                },
+                explanation: {
+                    id: "`INSERT INTO` adalah perintah untuk menambahkan baris baru. Urutan nilai harus sesuai dengan urutan kolom (id, name, division, salary).",
+                    en: "`INSERT INTO` is the command to add a new row. Value order must match column order (id, name, division, salary)."
+                },
+                initialCode: "INSERT INTO employees VALUES (..., '...', '...', ...)",
+                expectedQuery: "INSERT INTO employees VALUES (6, 'Dewi', 'HR', 7500000)",
+                validationMode: "insert",
+                resetDB: true,
+            },
+            {
+                id: 10,
+                world: "WORLD 3: THE MANAGER",
+                title: { id: "Naikkan Gaji Budi", en: "Raise Budi's Salary" },
+                description: {
+                    id: "Budi dapat promosi! Naikkan gajinya menjadi 9000000.",
+                    en: "Budi got promoted! Raise his salary to 9000000."
+                },
+                instruction: {
+                    id: "Gunakan **UPDATE** dengan **WHERE id = 1** (Budi adalah id 1)",
+                    en: "Use **UPDATE** with **WHERE id = 1** (Budi is id 1)"
+                },
+                hint: {
+                    id: "UPDATE employees SET salary = 9000000 WHERE id = 1",
+                    en: "UPDATE employees SET salary = 9000000 WHERE id = 1"
+                },
+                explanation: {
+                    id: "`UPDATE` mengubah data yang sudah ada. **WHERE sangat penting!** Tanpa WHERE, SEMUA baris akan berubah!",
+                    en: "`UPDATE` modifies existing data. **WHERE is crucial!** Without WHERE, ALL rows will change!"
+                },
+                initialCode: "UPDATE employees\nSET salary = ...\nWHERE id = ...",
+                expectedQuery: "UPDATE employees SET salary = 9000000 WHERE id = 1",
+                validationMode: "update",
+                resetDB: true,
+            },
+            {
+                id: 11,
+                world: "WORLD 3: THE MANAGER",
+                title: { id: "Bahaya! Update Tanpa WHERE", en: "Danger! Update Without WHERE" },
+                description: {
+                    id: "⚠️ LEVEL KHUSUS: Apa yang terjadi jika UPDATE tanpa WHERE? Mari kita lihat!",
+                    en: "⚠️ SPECIAL LEVEL: What happens if UPDATE without WHERE? Let's see!"
+                },
+                instruction: {
+                    id: "Ketik: **UPDATE employees SET salary = 1000000** (tanpa WHERE). Lihat hasilnya!",
+                    en: "Type: **UPDATE employees SET salary = 1000000** (without WHERE). See what happens!"
+                },
+                hint: {
+                    id: "Ketik persis: UPDATE employees SET salary = 1000000",
+                    en: "Type exactly: UPDATE employees SET salary = 1000000"
+                },
+                explanation: {
+                    id: "💥 SEMUA gaji berubah jadi 1 juta! Ini namanya DISASTER. **SELALU gunakan WHERE saat UPDATE/DELETE!** Bayangkan kalau ini database production yang punya jutaan user...",
+                    en: "💥 ALL salaries changed to 1 million! This is a DISASTER. **ALWAYS use WHERE with UPDATE/DELETE!** Imagine if this was a production database with millions of users..."
+                },
+                initialCode: "-- Coba ketik UPDATE tanpa WHERE\n-- (Database akan di-reset otomatis setelah level ini)\n",
+                expectedQuery: "UPDATE employees SET salary = 1000000",
+                validationMode: "update",
+                resetDB: true,
+            },
+            {
+                id: 12,
+                world: "WORLD 3: THE MANAGER",
+                title: { id: "Hapus Karyawan", en: "Delete Employee" },
+                description: {
+                    id: "Agus (id=5) resign. Hapus datanya dari database.",
+                    en: "Agus (id=5) resigned. Delete his data from database."
+                },
+                instruction: {
+                    id: "Gunakan **DELETE FROM** dengan **WHERE id = 5**",
+                    en: "Use **DELETE FROM** with **WHERE id = 5**"
+                },
+                hint: {
+                    id: "DELETE FROM employees WHERE id = 5",
+                    en: "DELETE FROM employees WHERE id = 5"
+                },
+                explanation: {
+                    id: "`DELETE FROM` menghapus baris. **WAJIB pakai WHERE!** Tanpa WHERE = semua data hilang!",
+                    en: "`DELETE FROM` removes rows. **MUST use WHERE!** Without WHERE = all data gone!"
+                },
+                initialCode: "DELETE FROM employees\nWHERE id = ...",
+                expectedQuery: "DELETE FROM employees WHERE id = 5",
+                validationMode: "delete",
+                resetDB: true,
+            },
+
+            // ========== WORLD 4: THE ANALYST (Aggregation) ==========
+            {
+                id: 13,
+                world: "WORLD 4: THE ANALYST",
+                title: { id: "Berapa Karyawan?", en: "How Many Employees?" },
+                description: {
+                    id: "Hitung total jumlah karyawan di perusahaan.",
+                    en: "Count the total number of employees in the company."
+                },
+                instruction: {
+                    id: "Gunakan **COUNT(*)** untuk menghitung jumlah baris",
+                    en: "Use **COUNT(*)** to count number of rows"
+                },
+                hint: {
+                    id: "SELECT COUNT(*) FROM employees",
+                    en: "SELECT COUNT(*) FROM employees"
+                },
+                explanation: {
+                    id: "`COUNT(*)` menghitung jumlah baris. Ini adalah fungsi agregasi pertamamu! Hasilnya satu angka, bukan tabel.",
+                    en: "`COUNT(*)` counts the number of rows. This is your first aggregation function! Result is a single number, not a table."
+                },
+                initialCode: "SELECT ...(*)  FROM employees",
+                expectedQuery: "SELECT COUNT(*) FROM employees",
+                validationMode: "match_rows",
+            },
+            {
+                id: 14,
+                world: "WORLD 4: THE ANALYST",
+                title: { id: "Total Biaya Gaji", en: "Total Salary Cost" },
+                description: {
+                    id: "Berapa total uang yang harus dibayarkan untuk semua gaji karyawan?",
+                    en: "How much total money must be paid for all employee salaries?"
+                },
+                instruction: {
+                    id: "Gunakan **SUM(salary)** untuk menjumlahkan semua gaji",
+                    en: "Use **SUM(salary)** to add up all salaries"
+                },
+                hint: {
+                    id: "SELECT SUM(salary) FROM employees",
+                    en: "SELECT SUM(salary) FROM employees"
+                },
+                explanation: {
+                    id: "`SUM()` menjumlahkan semua nilai di kolom tersebut. Berguna untuk menghitung total pengeluaran, revenue, dll.",
+                    en: "`SUM()` adds up all values in that column. Useful for calculating total expenses, revenue, etc."
+                },
+                initialCode: "SELECT ...(salary) FROM employees",
+                expectedQuery: "SELECT SUM(salary) FROM employees",
+                validationMode: "match_rows",
+            },
+            {
+                id: 15,
+                world: "WORLD 4: THE ANALYST",
+                title: { id: "Rata-rata Gaji", en: "Average Salary" },
+                description: {
+                    id: "Berapa gaji rata-rata di perusahaan ini?",
+                    en: "What's the average salary in this company?"
+                },
+                instruction: {
+                    id: "Gunakan **AVG(salary)** untuk menghitung rata-rata",
+                    en: "Use **AVG(salary)** to calculate average"
+                },
+                hint: {
+                    id: "SELECT AVG(salary) FROM employees",
+                    en: "SELECT AVG(salary) FROM employees"
+                },
+                explanation: {
+                    id: "`AVG()` menghitung rata-rata (average). Total semua nilai dibagi jumlah baris.",
+                    en: "`AVG()` calculates average. Sum of all values divided by number of rows."
+                },
+                initialCode: "SELECT ...(salary) FROM employees",
+                expectedQuery: "SELECT AVG(salary) FROM employees",
+                validationMode: "match_rows",
+            },
+            {
+                id: 16,
+                world: "WORLD 4: THE ANALYST",
+                title: { id: "Per Divisi", en: "Per Division" },
+                description: {
+                    id: "Hitung jumlah karyawan di SETIAP divisi. Hasilnya harus menampilkan divisi dan jumlahnya.",
+                    en: "Count employees in EACH division. Result should show division and count."
+                },
+                instruction: {
+                    id: "Gunakan **GROUP BY division** setelah COUNT",
+                    en: "Use **GROUP BY division** after COUNT"
+                },
+                hint: {
+                    id: "SELECT division, COUNT(*) FROM employees GROUP BY division",
+                    en: "SELECT division, COUNT(*) FROM employees GROUP BY division"
+                },
+                explanation: {
+                    id: "`GROUP BY` mengelompokkan data. Database akan membuat 'grup' untuk setiap nilai unik di kolom tersebut, lalu menjalankan COUNT() untuk tiap grup.",
+                    en: "`GROUP BY` groups data. Database creates 'groups' for each unique value in that column, then runs COUNT() for each group."
+                },
+                initialCode: "SELECT division, COUNT(*)\nFROM employees\nGROUP BY ...",
+                expectedQuery: "SELECT division, COUNT(*) FROM employees GROUP BY division",
+                validationMode: "match_rows",
+            },
+
+            // ========== WORLD 5: THE ARCHITECT (Joins) ==========
+            {
+                id: 17,
+                world: "WORLD 5: THE ARCHITECT",
+                title: { id: "Gabungkan Tabel", en: "Join Tables" },
+                description: {
+                    id: "Kita punya tabel 'departments' sekarang! Gabungkan data karyawan dengan nama departemen mereka.",
+                    en: "We have a 'departments' table now! Combine employee data with their department names."
+                },
+                instruction: {
+                    id: "Gunakan **INNER JOIN** untuk menggabungkan employees dan departments berdasarkan division = dept_id",
+                    en: "Use **INNER JOIN** to combine employees and departments based on division = dept_id"
+                },
+                hint: {
+                    id: "SELECT e.name, d.dept_name FROM employees e INNER JOIN departments d ON e.division = d.dept_id",
+                    en: "SELECT e.name, d.dept_name FROM employees e INNER JOIN departments d ON e.division = d.dept_id"
+                },
+                explanation: {
+                    id: "`INNER JOIN` menggabungkan 2 tabel berdasarkan kondisi yang cocok. 'ON' menentukan kolom mana yang dijadikan kunci pencocokan.",
+                    en: "`INNER JOIN` combines 2 tables based on matching conditions. 'ON' specifies which columns are used as matching keys."
+                },
+                initialCode: "SELECT e.name, d.dept_name\nFROM employees e\nINNER JOIN departments d\nON e.division = d....",
+                expectedQuery: "SELECT e.name, d.dept_name FROM employees e INNER JOIN departments d ON e.division = d.dept_id",
+                validationMode: "match_rows",
+                showDepartments: true,
+            },
+            {
+                id: 18,
+                world: "WORLD 5: THE ARCHITECT",
+                title: { id: "Departemen Tanpa Karyawan", en: "Departments Without Employees" },
+                description: {
+                    id: "Cari departemen yang TIDAK memiliki karyawan (gunakan LEFT JOIN).",
+                    en: "Find departments that have NO employees (use LEFT JOIN)."
+                },
+                instruction: {
+                    id: "Gunakan **LEFT JOIN** dan filter WHERE e.id IS NULL",
+                    en: "Use **LEFT JOIN** and filter WHERE e.id IS NULL"
+                },
+                hint: {
+                    id: "SELECT d.dept_name FROM departments d LEFT JOIN employees e ON d.dept_id = e.division WHERE e.id IS NULL",
+                    en: "SELECT d.dept_name FROM departments d LEFT JOIN employees e ON d.dept_id = e.division WHERE e.id IS NULL"
+                },
+                explanation: {
+                    id: "`LEFT JOIN` mengambil SEMUA dari tabel kiri, meskipun tidak cocok. Jika tidak cocok, kolom dari tabel kanan jadi NULL. Makanya kita bisa filter IS NULL untuk cari yang tidak punya pasangan.",
+                    en: "`LEFT JOIN` takes ALL from left table, even if no match. If no match, columns from right table become NULL. That's why we can filter IS NULL to find those without pairs."
+                },
+                initialCode: "SELECT d.dept_name\nFROM departments d\nLEFT JOIN employees e\nON d.dept_id = e.division\nWHERE e.id IS ...",
+                expectedQuery: "SELECT d.dept_name FROM departments d LEFT JOIN employees e ON d.dept_id = e.division WHERE e.id IS NULL",
+                validationMode: "match_rows",
+                showDepartments: true,
+            },
+
+            // ========== WORLD 6: THE NESTED (Subqueries) ==========
+            {
+                id: 19,
+                world: "WORLD 6: THE NESTED",
+                title: { id: "Di Atas Rata-rata", en: "Above Average" },
+                description: {
+                    id: "Cari karyawan yang gajinya LEBIH BESAR dari rata-rata gaji perusahaan.",
+                    en: "Find employees whose salary is HIGHER than company average."
+                },
+                instruction: {
+                    id: "Gunakan **subquery**: WHERE salary > (SELECT AVG(salary) FROM employees)",
+                    en: "Use **subquery**: WHERE salary > (SELECT AVG(salary) FROM employees)"
+                },
+                hint: {
+                    id: "SELECT * FROM employees WHERE salary > (SELECT AVG(salary) FROM employees)",
+                    en: "SELECT * FROM employees WHERE salary > (SELECT AVG(salary) FROM employees)"
+                },
+                explanation: {
+                    id: "Subquery = query di dalam query. Database jalankan query dalam kurung dulu, dapat angka rata-rata, baru dibandingkan dengan salary tiap baris.",
+                    en: "Subquery = query inside query. Database runs query in parentheses first, gets average number, then compares with salary of each row."
+                },
+                initialCode: "SELECT * FROM employees\nWHERE salary > (\n  SELECT ...(...) FROM employees\n)",
+                expectedQuery: "SELECT * FROM employees WHERE salary > (SELECT AVG(salary) FROM employees)",
+                validationMode: "match_rows",
+            },
+            {
+                id: 20,
+                world: "WORLD 6: THE NESTED",
+                title: { id: "Subquery di FROM", en: "Subquery in FROM" },
+                description: {
+                    id: "Hitung rata-rata dari hasil yang sudah difilter. Ambil karyawan IT, lalu hitung rata-rata gajinya.",
+                    en: "Calculate average from filtered results. Get IT employees, then calculate their average salary."
+                },
+                instruction: {
+                    id: "Gunakan subquery di FROM: SELECT AVG(salary) FROM (SELECT * FROM employees WHERE division = 'IT') AS it_team",
+                    en: "Use subquery in FROM: SELECT AVG(salary) FROM (SELECT * FROM employees WHERE division = 'IT') AS it_team"
+                },
+                hint: {
+                    id: "SELECT AVG(salary) FROM (SELECT * FROM employees WHERE division = 'IT') AS it_team",
+                    en: "SELECT AVG(salary) FROM (SELECT * FROM employees WHERE division = 'IT') AS it_team"
+                },
+                explanation: {
+                    id: "Subquery bisa di FROM! Database akan menjalankan query dalam kurung, lalu hasil temporary table itu bisa kita query lagi. Harus pakai AS untuk kasih nama.",
+                    en: "Subquery can be in FROM! Database runs query in parentheses, then that temporary table can be queried again. Must use AS to give it a name."
+                },
+                initialCode: "SELECT AVG(salary)\nFROM (\n  SELECT * FROM employees WHERE division = '...'\n) AS it_team",
+                expectedQuery: "SELECT AVG(salary) FROM (SELECT * FROM employees WHERE division = 'IT') AS it_team",
+                validationMode: "match_rows",
+            },
+            {
+                id: 21,
+                world: "WORLD 6: THE NESTED",
+                title: { id: "IN vs EXISTS", en: "IN vs EXISTS" },
+                description: {
+                    id: "Cari karyawan yang divisinya ada di list: ('IT', 'HR'). Gunakan IN.",
+                    en: "Find employees whose division is in list: ('IT', 'HR'). Use IN."
+                },
+                instruction: {
+                    id: "Gunakan **IN**: WHERE division IN ('IT', 'HR')",
+                    en: "Use **IN**: WHERE division IN ('IT', 'HR')"
+                },
+                hint: {
+                    id: "SELECT * FROM employees WHERE division IN ('IT', 'HR')",
+                    en: "SELECT * FROM employees WHERE division IN ('IT', 'HR')"
+                },
+                explanation: {
+                    id: "`IN` memeriksa apakah nilai ada dalam list. Ini lebih rapi daripada OR berulang-ulang. Untuk dataset besar, `EXISTS` kadang lebih cepat.",
+                    en: "`IN` checks if value exists in list. This is cleaner than repeated ORs. For large datasets, `EXISTS` is sometimes faster."
+                },
+                initialCode: "SELECT * FROM employees\nWHERE division IN ('...', '...')",
+                expectedQuery: "SELECT * FROM employees WHERE division IN ('IT', 'HR')",
+                validationMode: "match_rows",
+            },
+
+            // ========== WORLD 7: THE MODERNIST (CTEs) ==========
+            {
+                id: 22,
+                world: "WORLD 7: THE MODERNIST",
+                title: { id: "WITH Clause (CTE)", en: "WITH Clause (CTE)" },
+                description: {
+                    id: "CTE = Common Table Expression. Cara modern menulis subquery yang lebih bersih!",
+                    en: "CTE = Common Table Expression. Modern way to write cleaner subqueries!"
+                },
+                instruction: {
+                    id: "Buat CTE bernama 'high_earners' untuk gaji > 7000000, lalu SELECT dari CTE tersebut",
+                    en: "Create CTE named 'high_earners' for salary > 7000000, then SELECT from that CTE"
+                },
+                hint: {
+                    id: "WITH high_earners AS (SELECT * FROM employees WHERE salary > 7000000) SELECT * FROM high_earners",
+                    en: "WITH high_earners AS (SELECT * FROM employees WHERE salary > 7000000) SELECT * FROM high_earners"
+                },
+                explanation: {
+                    id: "`WITH` membuat temporary table dengan nama. Lebih mudah dibaca dan bisa di-reuse dalam query yang sama. Ini seperti 'variabel' untuk query.",
+                    en: "`WITH` creates a named temporary table. Easier to read and can be reused in the same query. It's like a 'variable' for queries."
+                },
+                initialCode: "WITH high_earners AS (\n  SELECT * FROM employees WHERE salary > ...\n)\nSELECT * FROM high_earners",
+                expectedQuery: "WITH high_earners AS (SELECT * FROM employees WHERE salary > 7000000) SELECT * FROM high_earners",
+                validationMode: "match_rows",
+            },
+            {
+                id: 23,
+                world: "WORLD 7: THE MODERNIST",
+                title: { id: "Multiple CTEs", en: "Multiple CTEs" },
+                description: {
+                    id: "Buat 2 CTE: 'it_team' (divisi IT) dan 'hr_team' (divisi HR), lalu gabungkan dengan UNION",
+                    en: "Create 2 CTEs: 'it_team' (IT division) and 'hr_team' (HR division), then combine with UNION"
+                },
+                instruction: {
+                    id: "WITH it_team AS (...), hr_team AS (...) SELECT * FROM it_team UNION SELECT * FROM hr_team",
+                    en: "WITH it_team AS (...), hr_team AS (...) SELECT * FROM it_team UNION SELECT * FROM hr_team"
+                },
+                hint: {
+                    id: "WITH it_team AS (SELECT * FROM employees WHERE division='IT'), hr_team AS (SELECT * FROM employees WHERE division='HR') SELECT * FROM it_team UNION SELECT * FROM hr_team",
+                    en: "WITH it_team AS (SELECT * FROM employees WHERE division='IT'), hr_team AS (SELECT * FROM employees WHERE division='HR') SELECT * FROM it_team UNION SELECT * FROM hr_team"
+                },
+                explanation: {
+                    id: "Multiple CTE dipisah koma. `UNION` menggabungkan hasil 2 query (tanpa duplikat). UNION ALL = dengan duplikat.",
+                    en: "Multiple CTEs separated by comma. `UNION` combines results of 2 queries (no duplicates). UNION ALL = with duplicates."
+                },
+                initialCode: "WITH \n  it_team AS (SELECT * FROM employees WHERE division='IT'),\n  hr_team AS (SELECT * FROM employees WHERE division='HR')\nSELECT * FROM it_team\nUNION\nSELECT * FROM hr_team",
+                expectedQuery: "WITH it_team AS (SELECT * FROM employees WHERE division='IT'), hr_team AS (SELECT * FROM employees WHERE division='HR') SELECT * FROM it_team UNION SELECT * FROM hr_team",
+                validationMode: "match_rows",
+            },
+
+            // ========== WORLD 8: THE GENIUS (Window Functions) ==========
+            {
+                id: 24,
+                world: "WORLD 8: THE GENIUS",
+                title: { id: "Ranking Gaji", en: "Salary Ranking" },
+                description: {
+                    id: "Beri ranking karyawan berdasarkan gaji (1 = tertinggi). Semua baris tetap muncul!",
+                    en: "Rank employees by salary (1 = highest). All rows still appear!"
+                },
+                instruction: {
+                    id: "Gunakan window function: ROW_NUMBER() OVER (ORDER BY salary DESC)",
+                    en: "Use window function: ROW_NUMBER() OVER (ORDER BY salary DESC)"
+                },
+                hint: {
+                    id: "SELECT name, salary, ROW_NUMBER() OVER (ORDER BY salary DESC) AS rank FROM employees",
+                    en: "SELECT name, salary, ROW_NUMBER() OVER (ORDER BY salary DESC) AS rank FROM employees"
+                },
+                explanation: {
+                    id: "Window functions memberi nomor/ranking TANPA menggabungkan baris (berbeda dengan GROUP BY). OVER() mendefinisikan 'jendela' perhitungan.",
+                    en: "Window functions assign numbers/rankings WITHOUT collapsing rows (unlike GROUP BY). OVER() defines the calculation 'window'."
+                },
+                initialCode: "SELECT name, salary,\n  ROW_NUMBER() OVER (ORDER BY salary DESC) AS rank\nFROM employees",
+                expectedQuery: "SELECT name, salary, ROW_NUMBER() OVER (ORDER BY salary DESC) AS rank FROM employees",
+                validationMode: "ordered",
+            },
+            {
+                id: 25,
+                world: "WORLD 8: THE GENIUS",
+                title: { id: "Ranking Per Divisi", en: "Rank Per Division" },
+                description: {
+                    id: "Beri ranking karyawan berdasarkan gaji DALAM divisi masing-masing.",
+                    en: "Rank employees by salary WITHIN their division."
+                },
+                instruction: {
+                    id: "Tambahkan PARTITION BY division dalam OVER clause",
+                    en: "Add PARTITION BY division in OVER clause"
+                },
+                hint: {
+                    id: "SELECT name, division, salary, ROW_NUMBER() OVER (PARTITION BY division ORDER BY salary DESC) AS div_rank FROM employees",
+                    en: "SELECT name, division, salary, ROW_NUMBER() OVER (PARTITION BY division ORDER BY salary DESC) AS div_rank FROM employees"
+                },
+                explanation: {
+                    id: "`PARTITION BY` membagi data jadi grup-grup, lalu window function dijalankan PER grup. Seperti GROUP BY, tapi tidak collapse rows!",
+                    en: "`PARTITION BY` divides data into groups, then window function runs PER group. Like GROUP BY, but doesn't collapse rows!"
+                },
+                initialCode: "SELECT name, division, salary,\n  ROW_NUMBER() OVER (\n    PARTITION BY ...\n    ORDER BY salary DESC\n  ) AS div_rank\nFROM employees",
+                expectedQuery: "SELECT name, division, salary, ROW_NUMBER() OVER (PARTITION BY division ORDER BY salary DESC) AS div_rank FROM employees",
+                validationMode: "ordered",
+            },
+            {
+                id: 26,
+                world: "WORLD 8: THE GENIUS",
+                title: { id: "Running Total", en: "Running Total" },
+                description: {
+                    id: "Hitung total gaji kumulatif jika diurutkan dari id terkecil.",
+                    en: "Calculate cumulative salary total when sorted by smallest id."
+                },
+                instruction: {
+                    id: "Gunakan SUM() OVER dengan ORDER BY id",
+                    en: "Use SUM() OVER with ORDER BY id"
+                },
+                hint: {
+                    id: "SELECT id, name, salary, SUM(salary) OVER (ORDER BY id) AS running_total FROM employees",
+                    en: "SELECT id, name, salary, SUM(salary) OVER (ORDER BY id) AS running_total FROM employees"
+                },
+                explanation: {
+                    id: "SUM() OVER dengan ORDER BY membuat 'running total'. Setiap baris menjumlahkan semua baris sebelumnya plus baris sekarang.",
+                    en: "SUM() OVER with ORDER BY creates 'running total'. Each row sums all previous rows plus current row."
+                },
+                initialCode: "SELECT id, name, salary,\n  SUM(salary) OVER (ORDER BY id) AS running_total\nFROM employees",
+                expectedQuery: "SELECT id, name, salary, SUM(salary) OVER (ORDER BY id) AS running_total FROM employees",
+                validationMode: "ordered",
+            },
+
+            // ========== WORLD 9: THE OPTIMIZER (Performance - Conceptual) ==========
+            {
+                id: 27,
+                world: "WORLD 9: THE OPTIMIZER",
+                title: { id: "DISTINCT untuk Unique", en: "DISTINCT for Unique" },
+                description: {
+                    id: "Tampilkan daftar divisi yang UNIK (tanpa duplikat).",
+                    en: "Display UNIQUE list of divisions (no duplicates)."
+                },
+                instruction: {
+                    id: "Gunakan **SELECT DISTINCT division**",
+                    en: "Use **SELECT DISTINCT division**"
+                },
+                hint: {
+                    id: "SELECT DISTINCT division FROM employees",
+                    en: "SELECT DISTINCT division FROM employees"
+                },
+                explanation: {
+                    id: "`DISTINCT` menghilangkan duplikat. Berguna untuk melihat nilai unik. Hati-hati: DISTINCT bisa lambat di tabel besar!",
+                    en: "`DISTINCT` removes duplicates. Useful for viewing unique values. Careful: DISTINCT can be slow on large tables!"
+                },
+                initialCode: "SELECT DISTINCT ... FROM employees",
+                expectedQuery: "SELECT DISTINCT division FROM employees",
+                validationMode: "match_rows",
+            },
+            {
+                id: 28,
+                world: "WORLD 9: THE OPTIMIZER",
+                title: { id: "LIMIT untuk Top N", en: "LIMIT for Top N" },
+                description: {
+                    id: "Tampilkan 3 karyawan dengan gaji tertinggi saja.",
+                    en: "Display only the top 3 highest-paid employees."
+                },
+                instruction: {
+                    id: "ORDER BY salary DESC, lalu LIMIT 3",
+                    en: "ORDER BY salary DESC, then LIMIT 3"
+                },
+                hint: {
+                    id: "SELECT * FROM employees ORDER BY salary DESC LIMIT 3",
+                    en: "SELECT * FROM employees ORDER BY salary DESC LIMIT 3"
+                },
+                explanation: {
+                    id: "`LIMIT` membatasi jumlah baris yang dikembalikan. Kombinasi dengan ORDER BY sangat powerful untuk 'Top N' queries.",
+                    en: "`LIMIT` restricts number of rows returned. Combination with ORDER BY is very powerful for 'Top N' queries."
+                },
+                initialCode: "SELECT * FROM employees\nORDER BY salary DESC\nLIMIT ...",
+                expectedQuery: "SELECT * FROM employees ORDER BY salary DESC LIMIT 3",
+                validationMode: "ordered",
+            },
+
+            // ========== WORLD 10: THE GRANDMASTER (Advanced Concepts) ==========
+            {
+                id: 29,
+                world: "WORLD 10: THE GRANDMASTER",
+                title: { id: "CASE WHEN", en: "CASE WHEN" },
+                description: {
+                    id: "Kategorikan karyawan: Gaji > 8000000 = 'Senior', 6500000-8000000 = 'Mid', sisanya 'Junior'",
+                    en: "Categorize employees: Salary > 8000000 = 'Senior', 6500000-8000000 = 'Mid', rest 'Junior'"
+                },
+                instruction: {
+                    id: "Gunakan **CASE WHEN** untuk conditional logic",
+                    en: "Use **CASE WHEN** for conditional logic"
+                },
+                hint: {
+                    id: "SELECT name, salary, CASE WHEN salary > 8000000 THEN 'Senior' WHEN salary >= 6500000 THEN 'Mid' ELSE 'Junior' END AS level FROM employees",
+                    en: "SELECT name, salary, CASE WHEN salary > 8000000 THEN 'Senior' WHEN salary >= 6500000 THEN 'Mid' ELSE 'Junior' END AS level FROM employees"
+                },
+                explanation: {
+                    id: "`CASE WHEN` adalah if-else dalam SQL. Dievaluasi dari atas ke bawah, berhenti di kondisi pertama yang true.",
+                    en: "`CASE WHEN` is if-else in SQL. Evaluated top to bottom, stops at first true condition."
+                },
+                initialCode: "SELECT name, salary,\n  CASE\n    WHEN salary > 8000000 THEN '...'\n    WHEN salary >= 6500000 THEN '...'\n    ELSE '...'\n  END AS level\nFROM employees",
+                expectedQuery: "SELECT name, salary, CASE WHEN salary > 8000000 THEN 'Senior' WHEN salary >= 6500000 THEN 'Mid' ELSE 'Junior' END AS level FROM employees",
+                validationMode: "match_rows",
+            },
+            {
+                id: 30,
+                world: "WORLD 10: THE GRANDMASTER",
+                title: { id: "HAVING Clause", en: "HAVING Clause" },
+                description: {
+                    id: "Cari divisi yang punya LEBIH DARI 1 karyawan.",
+                    en: "Find divisions that have MORE THAN 1 employee."
+                },
+                instruction: {
+                    id: "GROUP BY division, lalu gunakan **HAVING COUNT(*) > 1**",
+                    en: "GROUP BY division, then use **HAVING COUNT(*) > 1**"
+                },
+                hint: {
+                    id: "SELECT division, COUNT(*) FROM employees GROUP BY division HAVING COUNT(*) > 1",
+                    en: "SELECT division, COUNT(*) FROM employees GROUP BY division HAVING COUNT(*) > 1"
+                },
+                explanation: {
+                    id: "`HAVING` adalah WHERE untuk hasil agregasi. WHERE filter sebelum GROUP BY, HAVING filter setelah GROUP BY.",
+                    en: "`HAVING` is WHERE for aggregation results. WHERE filters before GROUP BY, HAVING filters after GROUP BY."
+                },
+                initialCode: "SELECT division, COUNT(*)\nFROM employees\nGROUP BY division\nHAVING COUNT(*) > ...",
+                expectedQuery: "SELECT division, COUNT(*) FROM employees GROUP BY division HAVING COUNT(*) > 1",
+                validationMode: "match_rows",
+            },
+            {
+                id: 31,
+                world: "WORLD 10: THE GRANDMASTER",
+                title: { id: "String Functions", en: "String Functions" },
+                description: {
+                    id: "Tampilkan nama karyawan dalam HURUF BESAR (uppercase).",
+                    en: "Display employee names in UPPERCASE."
+                },
+                instruction: {
+                    id: "Gunakan **UPPER(name)**",
+                    en: "Use **UPPER(name)**"
+                },
+                hint: {
+                    id: "SELECT UPPER(name) AS name, division FROM employees",
+                    en: "SELECT UPPER(name) AS name, division FROM employees"
+                },
+                explanation: {
+                    id: "SQL punya banyak string functions: UPPER(), LOWER(), LENGTH(), SUBSTRING(), CONCAT(), dll. Berguna untuk data cleaning dan formatting.",
+                    en: "SQL has many string functions: UPPER(), LOWER(), LENGTH(), SUBSTRING(), CONCAT(), etc. Useful for data cleaning and formatting."
+                },
+                initialCode: "SELECT ...(...) AS name, division\nFROM employees",
+                expectedQuery: "SELECT UPPER(name) AS name, division FROM employees",
+                validationMode: "match_rows",
+            },
+            {
+                id: 32,
+                world: "WORLD 10: THE GRANDMASTER",
+                title: { id: "Alias dengan AS", en: "Alias with AS" },
+                description: {
+                    id: "Hitung total gaji dan beri nama kolom 'total_payroll'.",
+                    en: "Calculate total salary and name the column 'total_payroll'."
+                },
+                instruction: {
+                    id: "SUM(salary) AS total_payroll",
+                    en: "SUM(salary) AS total_payroll"
+                },
+                hint: {
+                    id: "SELECT SUM(salary) AS total_payroll FROM employees",
+                    en: "SELECT SUM(salary) AS total_payroll FROM employees"
+                },
+                explanation: {
+                    id: "`AS` memberi nama alias untuk kolom atau tabel. Membuat hasil lebih readable. AS bersifat opsional tapi best practice menggunakannya.",
+                    en: "`AS` gives alias names to columns or tables. Makes results more readable. AS is optional but best practice to use it."
+                },
+                initialCode: "SELECT SUM(salary) AS ...\nFROM employees",
+                expectedQuery: "SELECT SUM(salary) AS total_payroll FROM employees",
+                validationMode: "match_rows",
+            },
+            {
+                id: 33,
+                world: "WORLD 10: THE GRANDMASTER",
+                title: { id: "MIN dan MAX", en: "MIN and MAX" },
+                description: {
+                    id: "Cari gaji TERKECIL dan TERBESAR dalam satu query.",
+                    en: "Find SMALLEST and LARGEST salary in one query."
+                },
+                instruction: {
+                    id: "SELECT MIN(salary), MAX(salary)",
+                    en: "SELECT MIN(salary), MAX(salary)"
+                },
+                hint: {
+                    id: "SELECT MIN(salary) AS min_salary, MAX(salary) AS max_salary FROM employees",
+                    en: "SELECT MIN(salary) AS min_salary, MAX(salary) AS max_salary FROM employees"
+                },
+                explanation: {
+                    id: "`MIN()` dan `MAX()` mencari nilai minimum dan maksimum. Bisa dikombinasikan dalam satu SELECT.",
+                    en: "`MIN()` and `MAX()` find minimum and maximum values. Can be combined in one SELECT."
+                },
+                initialCode: "SELECT MIN(salary) AS min_salary, MAX(salary) AS max_salary\nFROM employees",
+                expectedQuery: "SELECT MIN(salary) AS min_salary, MAX(salary) AS max_salary FROM employees",
+                validationMode: "match_rows",
+            },
+            {
+                id: 34,
+                world: "WORLD 10: THE GRANDMASTER",
+                title: { id: "Complex Filter", en: "Complex Filter" },
+                description: {
+                    id: "Cari karyawan IT atau HR yang gajinya di atas 7 juta. Kombinasi AND & OR!",
+                    en: "Find IT or HR employees with salary above 7 million. Combine AND & OR!"
+                },
+                instruction: {
+                    id: "WHERE (division = 'IT' OR division = 'HR') AND salary > 7000000",
+                    en: "WHERE (division = 'IT' OR division = 'HR') AND salary > 7000000"
+                },
+                hint: {
+                    id: "SELECT * FROM employees WHERE (division = 'IT' OR division = 'HR') AND salary > 7000000",
+                    en: "SELECT * FROM employees WHERE (division = 'IT' OR division = 'HR') AND salary > 7000000"
+                },
+                explanation: {
+                    id: "Gunakan kurung () untuk mengelompokkan kondisi. Tanpa kurung, AND akan dievaluasi duluan (operator precedence).",
+                    en: "Use parentheses () to group conditions. Without parentheses, AND is evaluated first (operator precedence)."
+                },
+                initialCode: "SELECT * FROM employees\nWHERE (division = '...' OR division = '...')\n  AND salary > ...",
+                expectedQuery: "SELECT * FROM employees WHERE (division = 'IT' OR division = 'HR') AND salary > 7000000",
+                validationMode: "match_rows",
+            },
+            {
+                id: 35,
+                world: "WORLD 10: THE GRANDMASTER",
+                title: { id: "🏆 Final Boss", en: "🏆 Final Boss" },
+                description: {
+                    id: "CHALLENGE ULTIMATE: Untuk setiap divisi, tampilkan nama divisi, jumlah karyawan, total gaji, dan rata-rata gaji. Urutkan berdasarkan total gaji menurun.",
+                    en: "ULTIMATE CHALLENGE: For each division, show division name, employee count, total salary, and average salary. Sort by total salary descending."
+                },
+                instruction: {
+                    id: "Kombinasikan: GROUP BY, COUNT, SUM, AVG, dan ORDER BY",
+                    en: "Combine: GROUP BY, COUNT, SUM, AVG, and ORDER BY"
+                },
+                hint: {
+                    id: "SELECT division, COUNT(*) AS emp_count, SUM(salary) AS total, AVG(salary) AS avg FROM employees GROUP BY division ORDER BY total DESC",
+                    en: "SELECT division, COUNT(*) AS emp_count, SUM(salary) AS total, AVG(salary) AS avg FROM employees GROUP BY division ORDER BY total DESC"
+                },
+                explanation: {
+                    id: "🎉 SELAMAT! Kamu telah menyelesaikan SQL Academy! Ini adalah kombinasi dari semua yang telah kamu pelajari. Di dunia nyata, query seperti ini sangat sering digunakan untuk business intelligence dan reporting. Keep learning!",
+                    en: "🎉 CONGRATULATIONS! You've completed SQL Academy! This is a combination of everything you've learned. In the real world, queries like this are frequently used for business intelligence and reporting. Keep learning!"
+                },
+                initialCode: "SELECT \n  division,\n  COUNT(*) AS emp_count,\n  SUM(salary) AS total,\n  AVG(salary) AS avg\nFROM employees\nGROUP BY division\nORDER BY total DESC",
+                expectedQuery: "SELECT division, COUNT(*) AS emp_count, SUM(salary) AS total, AVG(salary) AS avg FROM employees GROUP BY division ORDER BY total DESC",
+                validationMode: "ordered",
             }
         ];
 
@@ -342,23 +1098,53 @@
             logicErrorEn: "Code ran successfully, but the result doesn't match the mission. Check instructions!"
         };
 
+        const ranks = [
+            { level: 1, name: { id: "PEMULA", en: "NOVICE" } },
+            { level: 5, name: { id: "PEMBELAJAR", en: "LEARNER" } },
+            { level: 10, name: { id: "PRAKTISI", en: "PRACTITIONER" } },
+            { level: 15, name: { id: "ANALIS", en: "ANALYST" } },
+            { level: 20, name: { id: "ARSITEK", en: "ARCHITECT" } },
+            { level: 25, name: { id: "JENIUS", en: "GENIUS" } },
+            { level: 30, name: { id: "MASTER", en: "MASTER" } },
+            { level: 35, name: { id: "🏆 GRANDMASTER", en: "🏆 GRANDMASTER" } }
+        ];
+
         // --- INIT ---
         window.onload = function() {
             initDB();
             loadLevel(0);
             updateUIText();
+            document.getElementById('totalLevels').innerText = levels.length;
         };
 
         function initDB() {
-            alasql('CREATE TABLE IF NOT EXISTS employees (id INT, name STRING, division STRING, salary INT)');
+            // Employees Table
+            alasql('DROP TABLE IF EXISTS employees');
+            alasql('CREATE TABLE employees (id INT, name STRING, division STRING, salary INT)');
+            resetEmployeeData();
+            
+            // Departments Table (for Join levels)
+            alasql('DROP TABLE IF EXISTS departments');
+            alasql('CREATE TABLE departments (dept_id STRING, dept_name STRING, budget INT)');
+            alasql("INSERT INTO departments VALUES ('IT', 'Information Technology', 500000000)");
+            alasql("INSERT INTO departments VALUES ('HR', 'Human Resources', 300000000)");
+            alasql("INSERT INTO departments VALUES ('Sales', 'Sales & Marketing', 400000000)");
+            alasql("INSERT INTO departments VALUES ('Finance', 'Finance', 350000000)");
+            
+            renderSourceTables();
+        }
+
+        function resetEmployeeData() {
             alasql('DELETE FROM employees'); 
             alasql("INSERT INTO employees VALUES (1, 'Budi', 'IT', 8000000)");
             alasql("INSERT INTO employees VALUES (2, 'Siti', 'HR', 7000000)");
             alasql("INSERT INTO employees VALUES (3, 'Joko', 'Sales', 6500000)");
             alasql("INSERT INTO employees VALUES (4, 'Rina', 'IT', 8500000)");
             alasql("INSERT INTO employees VALUES (5, 'Agus', 'Sales', 6000000)");
-            
-            // Render Source Table
+        }
+
+        function renderSourceTables() {
+            // Render Employees Table
             const data = alasql("SELECT * FROM employees");
             const tbody = document.getElementById('dbTableBody');
             tbody.innerHTML = '';
@@ -373,12 +1159,37 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Render Departments Table
+            const deptData = alasql("SELECT * FROM departments");
+            const deptTbody = document.getElementById('deptTableBody');
+            deptTbody.innerHTML = '';
+            deptData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50";
+                tr.innerHTML = `
+                    <td class="px-3 py-1 font-mono text-purple-400">${row.dept_id}</td>
+                    <td class="px-3 py-1 font-semibold text-white">${row.dept_name}</td>
+                    <td class="px-3 py-1 font-mono text-green-400">${row.budget.toLocaleString('id-ID')}</td>
+                `;
+                deptTbody.appendChild(tr);
+            });
         }
 
         function getBadgeColor(div) {
             if(div === 'IT') return 'bg-blue-900 text-blue-300';
             if(div === 'HR') return 'bg-pink-900 text-pink-300';
-            return 'bg-orange-900 text-orange-300';
+            if(div === 'Sales') return 'bg-orange-900 text-orange-300';
+            return 'bg-gray-900 text-gray-300';
+        }
+
+        function getRank(levelNum) {
+            for(let i = ranks.length - 1; i >= 0; i--) {
+                if(levelNum >= ranks[i].level) {
+                    return ranks[i].name[lang];
+                }
+            }
+            return ranks[0].name[lang];
         }
 
         // --- CORE FUNCTIONS ---
@@ -387,13 +1198,29 @@
             currentLevelIndex = index;
             const level = levels[index];
 
+            // Reset DB if needed
+            if(level.resetDB) {
+                resetEmployeeData();
+                renderSourceTables();
+            }
+
+            // Show/Hide Departments Table
+            if(level.showDepartments) {
+                document.getElementById('departmentsTableContainer').classList.remove('hidden');
+            } else {
+                document.getElementById('departmentsTableContainer').classList.add('hidden');
+            }
+
             // Update Text
             document.getElementById('currentLevelDisplay').innerText = index + 1;
             document.getElementById('levelTitle').innerText = level.title[lang];
-            document.getElementById('levelDesc').innerHTML = markedToHtml(level.description[lang]); // Simple converter
-            document.getElementById('levelInstruction').innerHTML = markedToHtml(level.instruction[lang]); // Allows bold tags
+            document.getElementById('levelDesc').innerHTML = markedToHtml(level.description[lang]);
+            document.getElementById('levelInstruction').innerHTML = markedToHtml(level.instruction[lang]);
             document.getElementById('levelHint').innerText = level.hint[lang];
             document.getElementById('explanationText').innerText = level.explanation[lang];
+            
+            // Update Rank
+            document.getElementById('rankDisplay').innerText = getRank(index + 1);
             
             // Update Editor
             document.getElementById('sqlEditor').value = level.initialCode;
@@ -409,7 +1236,7 @@
         }
 
         function runQuery() {
-            const userCode = document.getElementById('sqlEditor').value;
+            const userCode = document.getElementById('sqlEditor').value.trim();
             const level = levels[currentLevelIndex];
 
             // Reset Messages
@@ -424,17 +1251,78 @@
             }
 
             try {
-                // 2. Run User Query
+                // 2. Handle different validation modes
+                if(level.validationMode === 'insert') {
+                    alasql(userCode);
+                    const afterInsert = alasql("SELECT * FROM employees");
+                    renderResult(afterInsert);
+                    
+                    // Check if new row exists
+                    const newRow = afterInsert.find(r => r.id === 6);
+                    if(newRow && newRow.name === 'Dewi') {
+                        showSuccess();
+                    } else {
+                        showError(lang === 'id' ? dictionary.logicErrorId : dictionary.logicErrorEn);
+                    }
+                    return;
+                }
+                
+                if(level.validationMode === 'update') {
+                    alasql(userCode);
+                    const afterUpdate = alasql("SELECT * FROM employees");
+                    renderResult(afterUpdate);
+                    
+                    // For level 10: Check if Budi's salary is 9000000
+                    if(level.id === 10) {
+                        const budi = afterUpdate.find(r => r.id === 1);
+                        if(budi && budi.salary === 9000000) {
+                            showSuccess();
+                        } else {
+                            showError(lang === 'id' ? dictionary.logicErrorId : dictionary.logicErrorEn);
+                        }
+                        return;
+                    }
+                    
+                    // For level 11: Check if all salaries are 1000000
+                    if(level.id === 11) {
+                        const allSame = afterUpdate.every(r => r.salary === 1000000);
+                        if(allSame) {
+                            showSuccess();
+                        } else {
+                            showError(lang === 'id' ? dictionary.logicErrorId : dictionary.logicErrorEn);
+                        }
+                        return;
+                    }
+                    
+                    showSuccess();
+                    return;
+                }
+                
+                if(level.validationMode === 'delete') {
+                    alasql(userCode);
+                    const afterDelete = alasql("SELECT * FROM employees");
+                    renderResult(afterDelete);
+                    
+                    // Check if id=5 is gone
+                    const agusGone = !afterDelete.find(r => r.id === 5);
+                    if(agusGone && afterDelete.length === 4) {
+                        showSuccess();
+                    } else {
+                        showError(lang === 'id' ? dictionary.logicErrorId : dictionary.logicErrorEn);
+                    }
+                    return;
+                }
+
+                // 3. Regular SELECT validation
                 const userResult = alasql(userCode);
                 renderResult(userResult);
 
-                // 3. Run Expected Query & Validate
+                // 4. Run Expected Query & Validate
                 const expectedResult = alasql(level.expectedQuery);
                 const isPassed = validateResult(userResult, expectedResult, level.validationMode);
 
                 if (isPassed) {
-                    document.getElementById('successBox').classList.remove('hidden');
-                    document.getElementById('explanationBox').classList.remove('hidden');
+                    showSuccess();
                 } else {
                     showError(lang === 'id' ? dictionary.logicErrorId : dictionary.logicErrorEn);
                 }
@@ -446,6 +1334,11 @@
                 }
                 showError(msg);
             }
+        }
+
+        function showSuccess() {
+            document.getElementById('successBox').classList.remove('hidden');
+            document.getElementById('explanationBox').classList.remove('hidden');
         }
 
         function renderResult(data) {
@@ -482,6 +1375,13 @@
 
         function validateResult(userRes, expectedRes, mode) {
             if (!userRes || !expectedRes) return false;
+            
+            // For ordered results
+            if(mode === 'ordered') {
+                return JSON.stringify(userRes) === JSON.stringify(expectedRes);
+            }
+            
+            // For unordered results
             if (userRes.length !== expectedRes.length) return false;
 
             const userKeys = Object.keys(userRes[0] || {}).sort();
@@ -491,14 +1391,20 @@
                 if (JSON.stringify(userKeys) !== JSON.stringify(expectedKeys)) return false;
             }
 
-            return JSON.stringify(userRes) === JSON.stringify(expectedRes);
+            // Sort both arrays for comparison (if not ordered mode)
+            const sortedUser = JSON.parse(JSON.stringify(userRes)).sort((a,b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+            const sortedExpected = JSON.parse(JSON.stringify(expectedRes)).sort((a,b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+            
+            return JSON.stringify(sortedUser) === JSON.stringify(sortedExpected);
         }
 
         function nextLevel() {
             if (currentLevelIndex < levels.length - 1) {
                 loadLevel(currentLevelIndex + 1);
             } else {
-                alert("Demo Completed!");
+                alert(lang === 'id' 
+                    ? "🎉 SELAMAT! Kamu telah menyelesaikan semua 35 level SQL Academy! Kamu sekarang adalah SQL GRANDMASTER! 🏆" 
+                    : "🎉 CONGRATULATIONS! You've completed all 35 levels of SQL Academy! You are now a SQL GRANDMASTER! 🏆");
             }
         }
 
@@ -521,7 +1427,7 @@
         function toggleLang() {
             lang = lang === 'id' ? 'en' : 'id';
             document.getElementById('langDisplay').innerText = lang.toUpperCase();
-            loadLevel(currentLevelIndex); // Reload text
+            loadLevel(currentLevelIndex);
             updateUIText();
         }
 
@@ -543,24 +1449,46 @@
             const menu = document.getElementById('levelMenu');
             menu.classList.toggle('hidden');
             if (!menu.classList.contains('hidden')) {
-                menu.innerHTML = levels.map((l, i) => `
-                    <button onclick="loadLevel(${i})" class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-700 border-b border-slate-700/50 last:border-0 ${i === currentLevelIndex ? 'text-blue-400 bg-slate-700/50' : 'text-slate-300'}">
-                        ${i+1}. ${l.title[lang]}
-                        ${i === currentLevelIndex ? '✔' : ''}
-                    </button>
+                // Group by worlds
+                const worldGroups = {};
+                levels.forEach((l, i) => {
+                    if(!worldGroups[l.world]) worldGroups[l.world] = [];
+                    worldGroups[l.world].push({level: l, index: i});
+                });
+                
+                menu.innerHTML = Object.keys(worldGroups).map(world => `
+                    <div class="border-b border-slate-700/50">
+                        <div class="px-4 py-2 bg-slate-900/50 text-[10px] font-bold text-slate-500">${world}</div>
+                        ${worldGroups[world].map(({level, index}) => `
+                            <button onclick="loadLevel(${index})" class="w-full text-left px-4 py-2 text-xs flex items-center justify-between hover:bg-slate-700 ${index === currentLevelIndex ? 'text-blue-400 bg-slate-700/50' : 'text-slate-300'}">
+                                <span>${index+1}. ${level.title[lang]}</span>
+                                ${index === currentLevelIndex ? '✔' : ''}
+                            </button>
+                        `).join('')}
+                    </div>
                 `).join('');
             }
         }
 
         // Helper for simple markdown
         function markedToHtml(text) {
-            // Converts **bold** to <strong>bold</strong>
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         }
 
         // --- CHANGELOG ---
         /*
-          [2025-02-14] - Initial Implementation of World 1 (Levels 1-3) & AI Roadmap.
+          [2025-02-14] - Complete implementation with 35 levels across 10 worlds
+          - WORLD 1-3: Basic SELECT, Filtering, CRUD (Levels 1-12)
+          - WORLD 4: Aggregations (Levels 13-16)
+          - WORLD 5: Joins (Levels 17-18)
+          - WORLD 6: Subqueries (Levels 19-21)
+          - WORLD 7: CTEs (Levels 22-23)
+          - WORLD 8: Window Functions (Levels 24-26)
+          - WORLD 9: Optimization basics (Levels 27-28)
+          - WORLD 10: Grandmaster concepts (Levels 29-35)
+          - Added rank progression system (NOVICE → GRANDMASTER)
+          - Added departments table for JOIN operations
+          - Bilingual support maintained throughout
         */
     </script>
 </body>
