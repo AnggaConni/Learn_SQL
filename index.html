@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Academy - Learn SQL Interactively</title>
+    <!-- Tailwind CSS for Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- AlaSQL for Database Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/alasql@4.3.2/dist/alasql.min.js"></script>
+    
+    <style>
+        /* Custom Scrollbar for nicer look */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans h-screen flex flex-col overflow-hidden">
+
+    <!-- 
+    ==========================================================================================
+      🚀 AI DEVELOPMENT ROADMAP (CURRICULUM) 🚀
+      
+      To any AI Assistant picking up this project: 
+      This prototype currently implements World 1 (Levels 1-3). 
+      Please continue the gamification following this curriculum structure.
+      
+      ⚠️ CHANGELOG REQUIREMENT:
+      If you modify this file, you MUST add a changelog entry at the bottom of the script section.
+      
+      IMPORTANT GUIDELINES:
+      1. BILINGUAL: All text (titles, descriptions, hints, explanations) MUST be in both 'id' (Indonesian) and 'en' (English).
+      2. EXPLANATION: Every level must have an 'explanation' field. This appears on the right panel after success to teach the concept.
+      3. LEVEL SELECTOR: Users can jump between levels. Ensure state management handles loose navigation.
+
+      --- WORLD 1: THE READER (Basic SELECT) ---
+      [Implemented] Level 1: SELECT * (Concept: Fetching everything)
+      [Implemented] Level 2: SELECT specific_columns (Concept: Efficiency/Privacy)
+      [Implemented] Level 3: SELECT ... WHERE condition (Concept: Filtering)
+
+      --- WORLD 2: THE FILTER (Filtering Logic) ---
+      Level 4: Multiple Conditions (AND) -> WHERE division = 'IT' AND salary > 8000000
+      Level 5: Alternative Conditions (OR) -> WHERE division = 'IT' OR division = 'HR'
+      Level 6: Pattern Matching (LIKE) -> WHERE name LIKE 'B%' (Starts with B)
+      Level 7: Range Search (BETWEEN) -> WHERE salary BETWEEN 5000000 AND 10000000
+      Level 8: Sorting (ORDER BY) -> ORDER BY salary DESC
+
+      --- WORLD 3: THE MANAGER (CRUD - Create, Update, Delete) ---
+      *Note: Ensure DB resets after each level in this world*
+      Level 9: INSERT INTO -> Add a new employee
+      Level 10: UPDATE specific row -> UPDATE employees SET salary = ... WHERE id = ...
+      Level 11: The "Oops" Moment -> Try UPDATE without WHERE (Simulate disaster, then block it)
+      Level 12: DELETE specific row -> DELETE FROM employees WHERE id = ...
+
+      --- WORLD 4: THE ANALYST (Aggregation) ---
+      Level 13: Counting rows -> COUNT(*)
+      Level 14: Total Cost -> SUM(salary)
+      Level 15: Averages -> AVG(salary)
+      Level 16: Grouping -> SELECT division, COUNT(*) FROM employees GROUP BY division
+
+      --- WORLD 5: THE ARCHITECT (Joins) ---
+      *Note: Introduce a second table: 'departments'*
+      Level 17: INNER JOIN -> Join employees with departments
+      Level 18: LEFT JOIN -> Find departments with no employees
+
+      --- 🛑 IS 18 LEVELS ENOUGH? NO! (FUTURE AI TASKS BELOW) 🛑 ---
+      The user explicitly requested that you (the next AI) carry the burden of the true master levels.
+      Don't stop at 18. Make the user sweat!
+
+      --- WORLD 6: THE NESTED (Subqueries) ---
+      Level 19: Subquery in WHERE -> Find employees with salary > (SELECT AVG(salary)...)
+      Level 20: Subquery in FROM -> Select from a result set
+      Level 21: EXISTS vs IN -> Performance concepts
+
+      --- WORLD 7: THE MODERNIST (CTEs) ---
+      Level 22: Basic WITH clause -> Cleaning up spaghetti code
+      Level 23: Recursive CTE -> Generate number series or org chart hierarchy
+
+      --- WORLD 8: THE GENIUS (Window Functions) ---
+      Level 24: RANK() -> Rank employees by salary within division (without collapsing rows)
+      Level 25: LEAD()/LAG() -> Compare current row with previous row
+      Level 26: Running Total -> SUM() OVER (ORDER BY ...)
+
+      --- WORLD 9: THE OPTIMIZER (Performance) ---
+      Level 27: EXPLAIN -> Understanding query cost
+      Level 28: INDEX -> Creating indexes to speed up search
+      
+      Good luck, AI Friend. Don't overheat! 🤯
+    ==========================================================================================
+    -->
+
+    <div class="flex flex-1 h-full">
+        <!-- LEFT PANEL: Editor & Instructions -->
+        <div class="w-1/2 flex flex-col border-r border-slate-700">
+            
+            <!-- Header -->
+            <div class="p-6 bg-slate-800 border-b border-slate-700">
+                <div class="flex items-center justify-between mb-2">
+                    <!-- Level Selector -->
+                    <div class="relative">
+                        <button id="levelBtn" onclick="toggleLevelMenu()" class="text-xs font-bold text-blue-400 tracking-wider uppercase flex items-center gap-1 hover:text-blue-300 transition">
+                            LEVEL <span id="currentLevelDisplay">1</span> / 3 ▼
+                        </button>
+                        <div id="levelMenu" class="hidden absolute top-8 left-0 z-50 w-64 bg-slate-800 border border-slate-600 rounded-lg shadow-xl overflow-hidden">
+                            <!-- Levels will be injected here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Language Toggle -->
+                    <button onclick="toggleLang()" class="flex items-center gap-2 text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded-full transition">
+                        🌐 <span id="langDisplay">ID</span>
+                    </button>
+                </div>
+                <h1 id="levelTitle" class="text-2xl font-bold text-white mb-2">Loading...</h1>
+                <p id="levelDesc" class="text-slate-300 text-sm leading-relaxed">Please wait...</p>
+            </div>
+
+            <!-- Editor Container -->
+            <div class="flex-1 flex flex-col p-6 relative bg-slate-900">
+                
+                <!-- Mission Box -->
+                <div class="mb-4 bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                    <h3 class="text-blue-300 text-sm font-bold mb-1 flex items-center gap-2 uppercase tracking-wide">
+                        🎯 <span class="lang-mission">Misi Kamu</span>
+                    </h3>
+                    <p id="levelInstruction" class="text-white text-md font-medium leading-relaxed">...</p>
+                </div>
+
+                <!-- Editor Header -->
+                <div class="flex justify-between items-end mb-2">
+                    <label class="text-xs text-slate-500 font-mono">SQL QUERY EDITOR</label>
+                    <button onclick="toggleHint()" class="text-xs text-yellow-500 hover:text-yellow-400 flex items-center gap-1">
+                        ❓ <span class="lang-hint-btn">Butuh Bantuan?</span>
+                    </button>
+                </div>
+
+                <!-- Hint Box -->
+                <div id="hintBox" class="hidden mb-2 p-2 bg-yellow-900/20 border border-yellow-600/30 rounded text-xs text-yellow-200 font-mono fade-in">
+                    💡 <span id="levelHint">...</span>
+                </div>
+
+                <!-- Textarea -->
+                <textarea id="sqlEditor" 
+                    class="w-full flex-1 bg-slate-950 border border-slate-700 rounded-lg p-4 font-mono text-green-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none shadow-inner text-lg leading-relaxed"
+                    spellcheck="false"></textarea>
+                
+                <!-- Action Buttons -->
+                <div class="mt-4 flex gap-3">
+                    <button onclick="runQuery()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/20">
+                        ▶ <span class="lang-run">Jalankan Query</span>
+                    </button>
+                    <button onclick="resetCode()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 py-3 px-4 rounded-lg transition" title="Reset Code">
+                        ↺
+                    </button>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorBox" class="hidden mt-4 p-4 bg-red-900/30 border border-red-500/50 rounded-lg flex items-start gap-3 fade-in">
+                    <div class="text-red-500 mt-0.5">✖</div>
+                    <div>
+                        <h4 class="font-bold text-red-400 text-sm lang-failed">Query Gagal</h4>
+                        <p id="errorMsg" class="text-red-200 text-sm mt-1">Error text...</p>
+                    </div>
+                </div>
+                
+                <!-- Success Message -->
+                <div id="successBox" class="hidden mt-4 p-4 bg-green-900/30 border border-green-500/50 rounded-lg flex items-center justify-between fade-in">
+                    <div class="flex items-center gap-3">
+                        <div class="text-green-500 text-xl">✔</div>
+                        <div>
+                            <h4 class="font-bold text-green-400 lang-awesome">Luar Biasa!</h4>
+                            <p class="text-green-200 text-sm lang-success-msg">Hasil sesuai target.</p>
+                        </div>
+                    </div>
+                    <button onclick="nextLevel()" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold text-sm shadow-lg">
+                        <span class="lang-next">Lanjut</span> →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: Visualization -->
+        <div class="w-1/2 flex flex-col bg-slate-800">
+            
+            <!-- Source Database -->
+            <div class="h-1/3 border-b border-slate-700 p-6 overflow-auto bg-slate-800">
+                <div class="flex items-center gap-2 mb-2 text-slate-400">
+                    <span class="font-mono">🗄️</span>
+                    <h3 class="text-xs font-bold uppercase tracking-wide">
+                        <span class="lang-db-source">Database Sumber:</span> <span class="text-white">employees</span>
+                    </h3>
+                </div>
+                <div class="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden shadow-sm">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-950 text-slate-400 font-medium">
+                            <tr>
+                                <th class="px-3 py-2 border-b border-slate-800">id</th>
+                                <th class="px-3 py-2 border-b border-slate-800">name</th>
+                                <th class="px-3 py-2 border-b border-slate-800">division</th>
+                                <th class="px-3 py-2 border-b border-slate-800">salary</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dbTableBody" class="divide-y divide-slate-800">
+                            <!-- Rows injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Query Result -->
+            <div class="flex-1 p-6 overflow-auto bg-slate-800/50 border-b border-slate-700">
+                <div class="flex items-center gap-2 mb-2 text-slate-400">
+                    <span class="font-mono">📋</span>
+                    <h3 class="text-xs font-bold uppercase tracking-wide lang-result">Hasil Query Kamu:</h3>
+                </div>
+                
+                <div id="resultContainer" class="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden shadow-sm hidden">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead id="resultHead" class="bg-slate-950 text-slate-400 font-medium"></thead>
+                        <tbody id="resultBody" class="divide-y divide-slate-800"></tbody>
+                    </table>
+                </div>
+                
+                <div id="emptyState" class="h-full flex flex-col items-center justify-center text-slate-600 border-2 border-dashed border-slate-700 rounded-lg">
+                    <div class="text-4xl opacity-50 mb-2">▶</div>
+                    <p class="lang-empty-state">Jalankan query untuk melihat hasil di sini.</p>
+                </div>
+            </div>
+
+            <!-- Explanation Panel -->
+            <div id="explanationBox" class="hidden p-6 bg-emerald-900/10 border-t-4 border-emerald-600 fade-in">
+                <h3 class="text-emerald-400 font-bold mb-2 flex items-center gap-2">
+                    ℹ️ <span class="lang-why">Kenapa ini berhasil?</span>
+                </h3>
+                <p id="explanationText" class="text-slate-300 text-sm leading-relaxed">...</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- DATA & CONFIG ---
+        let lang = 'id';
+        let currentLevelIndex = 0;
+        let dbData = [];
+
+        const levels = [
+            {
+                id: 1,
+                title: { id: "Hello SQL!", en: "Hello SQL!" },
+                description: { 
+                    id: "Selamat datang! Misi pertamamu adalah melihat **SEMUA** data yang ada di tabel 'employees'.", 
+                    en: "Welcome! Your first mission is to view **ALL** data in the 'employees' table." 
+                },
+                instruction: {
+                    id: "Ganti tanda titik-titik (...) dengan tanda bintang (**\***) pada editor di bawah.",
+                    en: "Replace the dots (...) with an asterisk (**\***) in the editor below."
+                },
+                hint: {
+                    id: "Simbol * artinya 'ALL' (Semua Kolom). Ketik: SELECT * FROM employees",
+                    en: "The * symbol means 'ALL' (All Columns). Type: SELECT * FROM employees"
+                },
+                explanation: {
+                    id: "Dalam SQL, simbol bintang (*) adalah singkatan untuk 'All Columns'. Ketika kamu menjalankan `SELECT *`, database akan mengambil seluruh data tanpa terkecuali.",
+                    en: "In SQL, the asterisk (*) is shorthand for 'All Columns'. When you run `SELECT *`, the database retrieves absolutely everything."
+                },
+                initialCode: "SELECT ... FROM employees",
+                expectedQuery: "SELECT * FROM employees",
+                validationMode: "match_rows",
+            },
+            {
+                id: 2,
+                title: { id: "Hanya Nama & Divisi", en: "Name & Division Only" },
+                description: {
+                    id: "Data gaji itu rahasia! Bos minta laporan daftar pegawai tapi cuma butuh kolom Nama dan Divisinya saja.",
+                    en: "Salary data is confidential! The boss wants a list of employees but only needs the Name and Division columns."
+                },
+                instruction: {
+                    id: "Hapus titik-titik (...) dan ketik nama kolom: **name, division**",
+                    en: "Remove the dots (...) and type the column names: **name, division**"
+                },
+                hint: {
+                    id: "Pisahkan nama kolom dengan koma. SELECT name, division FROM ...",
+                    en: "Separate column names with commas. SELECT name, division FROM ..."
+                },
+                explanation: {
+                    id: "Memilih kolom spesifik (seperti `SELECT name`) jauh lebih efisien daripada `SELECT *`. Ini menghemat bandwidth dan menjaga privasi data.",
+                    en: "Selecting specific columns (like `SELECT name`) is much more efficient than `SELECT *`. It saves bandwidth and protects data privacy."
+                },
+                initialCode: "SELECT ..., ... FROM employees",
+                expectedQuery: "SELECT name, division FROM employees",
+                validationMode: "exact_columns",
+            },
+            {
+                id: 3,
+                title: { id: "Tim IT Saja", en: "IT Team Only" },
+                description: {
+                    id: "Kita mau meeting khusus tim IT. Tolong cari pegawai yang divisinya 'IT'.",
+                    en: "We're having an IT team meeting. Please find employees whose division is 'IT'."
+                },
+                instruction: {
+                    id: "Gunakan filter '**WHERE**' dengan mengisi divisinya menjadi '**IT**'",
+                    en: "Use the '**WHERE**' filter by setting the division to '**IT**'"
+                },
+                hint: {
+                    id: "Ingat pakai tanda kutip tunggal untuk teks. ... WHERE division = 'IT'",
+                    en: "Remember to use single quotes for text. ... WHERE division = 'IT'"
+                },
+                explanation: {
+                    id: "`WHERE` adalah perintah untuk 'menyaring' (filter). Database akan mengecek setiap baris: 'Apakah dia IT? Jika ya, ambil'.",
+                    en: "`WHERE` is the command for filtering. The database checks every row: 'Is this IT? If yes, keep it'."
+                },
+                initialCode: "SELECT * FROM employees WHERE division = '...'",
+                expectedQuery: "SELECT * FROM employees WHERE division = 'IT'",
+                validationMode: "match_rows",
+            }
+        ];
+
+        // --- DICTIONARY FOR UI ---
+        const dictionary = {
+            mission: { id: "Misi Kamu", en: "Your Mission" },
+            hintBtn: { id: "Butuh Bantuan?", en: "Need Hint?" },
+            hideHint: { id: "Tutup Hint", en: "Hide Hint" },
+            run: { id: "Jalankan Query", en: "Run Query" },
+            failed: { id: "Query Gagal", en: "Query Failed" },
+            awesome: { id: "Luar Biasa!", en: "Awesome!" },
+            successMsg: { id: "Hasil sesuai target.", en: "Result matches the target." },
+            next: { id: "Lanjut", en: "Next" },
+            dbSource: { id: "Database Sumber:", en: "Source Database:" },
+            result: { id: "Hasil Query Kamu:", en: "Your Query Result:" },
+            emptyState: { id: "Jalankan query untuk melihat hasil di sini.", en: "Run query to see results here." },
+            why: { id: "Kenapa ini berhasil?", en: "Why did this work?" },
+            syntaxErrorId: "Syntax Error: Ada kesalahan penulisan. Cek ejaan (SELECT, FROM) atau tanda baca.",
+            syntaxErrorEn: "Syntax Error: Check your spelling (SELECT, FROM) or punctuation.",
+            placeholderId: "⚠️ Oops! Kamu belum mengganti tanda titik-titik (...) dengan kode yang benar.",
+            placeholderEn: "⚠️ Oops! You haven't replaced the dots (...) with the correct code yet.",
+            logicErrorId: "Kode berjalan lancar, tapi hasilnya belum sesuai misi. Cek lagi instruksinya!",
+            logicErrorEn: "Code ran successfully, but the result doesn't match the mission. Check instructions!"
+        };
+
+        // --- INIT ---
+        window.onload = function() {
+            initDB();
+            loadLevel(0);
+            updateUIText();
+        };
+
+        function initDB() {
+            alasql('CREATE TABLE IF NOT EXISTS employees (id INT, name STRING, division STRING, salary INT)');
+            alasql('DELETE FROM employees'); 
+            alasql("INSERT INTO employees VALUES (1, 'Budi', 'IT', 8000000)");
+            alasql("INSERT INTO employees VALUES (2, 'Siti', 'HR', 7000000)");
+            alasql("INSERT INTO employees VALUES (3, 'Joko', 'Sales', 6500000)");
+            alasql("INSERT INTO employees VALUES (4, 'Rina', 'IT', 8500000)");
+            alasql("INSERT INTO employees VALUES (5, 'Agus', 'Sales', 6000000)");
+            
+            // Render Source Table
+            const data = alasql("SELECT * FROM employees");
+            const tbody = document.getElementById('dbTableBody');
+            tbody.innerHTML = '';
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50";
+                tr.innerHTML = `
+                    <td class="px-3 py-1 font-mono text-purple-400">${row.id}</td>
+                    <td class="px-3 py-1 font-semibold text-white">${row.name}</td>
+                    <td class="px-3 py-1"><span class="px-2 py-0.5 rounded-sm text-[10px] font-bold ${getBadgeColor(row.division)}">${row.division}</span></td>
+                    <td class="px-3 py-1 font-mono text-green-400">${row.salary.toLocaleString('id-ID')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function getBadgeColor(div) {
+            if(div === 'IT') return 'bg-blue-900 text-blue-300';
+            if(div === 'HR') return 'bg-pink-900 text-pink-300';
+            return 'bg-orange-900 text-orange-300';
+        }
+
+        // --- CORE FUNCTIONS ---
+
+        function loadLevel(index) {
+            currentLevelIndex = index;
+            const level = levels[index];
+
+            // Update Text
+            document.getElementById('currentLevelDisplay').innerText = index + 1;
+            document.getElementById('levelTitle').innerText = level.title[lang];
+            document.getElementById('levelDesc').innerHTML = markedToHtml(level.description[lang]); // Simple converter
+            document.getElementById('levelInstruction').innerHTML = markedToHtml(level.instruction[lang]); // Allows bold tags
+            document.getElementById('levelHint').innerText = level.hint[lang];
+            document.getElementById('explanationText').innerText = level.explanation[lang];
+            
+            // Update Editor
+            document.getElementById('sqlEditor').value = level.initialCode;
+
+            // Reset UI States
+            document.getElementById('hintBox').classList.add('hidden');
+            document.getElementById('errorBox').classList.add('hidden');
+            document.getElementById('successBox').classList.add('hidden');
+            document.getElementById('explanationBox').classList.add('hidden');
+            document.getElementById('resultContainer').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('levelMenu').classList.add('hidden');
+        }
+
+        function runQuery() {
+            const userCode = document.getElementById('sqlEditor').value;
+            const level = levels[currentLevelIndex];
+
+            // Reset Messages
+            document.getElementById('errorBox').classList.add('hidden');
+            document.getElementById('successBox').classList.add('hidden');
+            document.getElementById('explanationBox').classList.add('hidden');
+
+            // 1. Placeholder Check
+            if (userCode.includes('...')) {
+                showError(lang === 'id' ? dictionary.placeholderId : dictionary.placeholderEn);
+                return;
+            }
+
+            try {
+                // 2. Run User Query
+                const userResult = alasql(userCode);
+                renderResult(userResult);
+
+                // 3. Run Expected Query & Validate
+                const expectedResult = alasql(level.expectedQuery);
+                const isPassed = validateResult(userResult, expectedResult, level.validationMode);
+
+                if (isPassed) {
+                    document.getElementById('successBox').classList.remove('hidden');
+                    document.getElementById('explanationBox').classList.remove('hidden');
+                } else {
+                    showError(lang === 'id' ? dictionary.logicErrorId : dictionary.logicErrorEn);
+                }
+
+            } catch (err) {
+                let msg = err.message;
+                if (msg.includes("Parse error")) {
+                    msg = lang === 'id' ? dictionary.syntaxErrorId : dictionary.syntaxErrorEn;
+                }
+                showError(msg);
+            }
+        }
+
+        function renderResult(data) {
+            const container = document.getElementById('resultContainer');
+            const empty = document.getElementById('emptyState');
+            const thead = document.getElementById('resultHead');
+            const tbody = document.getElementById('resultBody');
+
+            if (!data || data.length === 0) {
+                container.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            empty.classList.add('hidden');
+
+            // Header
+            const keys = Object.keys(data[0]);
+            thead.innerHTML = `<tr>${keys.map(k => `<th class="px-4 py-3 border-b border-slate-800 capitalize">${k}</th>`).join('')}</tr>`;
+
+            // Body
+            tbody.innerHTML = data.map(row => `
+                <tr class="hover:bg-slate-800/50">
+                    ${Object.values(row).map(val => `<td class="px-4 py-2 font-mono text-slate-200">${formatValue(val)}</td>`).join('')}
+                </tr>
+            `).join('');
+        }
+
+        function formatValue(val) {
+            if (typeof val === 'number' && val > 1000) return val.toLocaleString('id-ID');
+            return val;
+        }
+
+        function validateResult(userRes, expectedRes, mode) {
+            if (!userRes || !expectedRes) return false;
+            if (userRes.length !== expectedRes.length) return false;
+
+            const userKeys = Object.keys(userRes[0] || {}).sort();
+            const expectedKeys = Object.keys(expectedRes[0] || {}).sort();
+
+            if (mode === 'exact_columns') {
+                if (JSON.stringify(userKeys) !== JSON.stringify(expectedKeys)) return false;
+            }
+
+            return JSON.stringify(userRes) === JSON.stringify(expectedRes);
+        }
+
+        function nextLevel() {
+            if (currentLevelIndex < levels.length - 1) {
+                loadLevel(currentLevelIndex + 1);
+            } else {
+                alert("Demo Completed!");
+            }
+        }
+
+        // --- UI HELPERS ---
+
+        function showError(msg) {
+            document.getElementById('errorMsg').innerText = msg;
+            document.getElementById('errorBox').classList.remove('hidden');
+        }
+
+        function toggleHint() {
+            const box = document.getElementById('hintBox');
+            box.classList.toggle('hidden');
+        }
+
+        function resetCode() {
+            document.getElementById('sqlEditor').value = levels[currentLevelIndex].initialCode;
+        }
+
+        function toggleLang() {
+            lang = lang === 'id' ? 'en' : 'id';
+            document.getElementById('langDisplay').innerText = lang.toUpperCase();
+            loadLevel(currentLevelIndex); // Reload text
+            updateUIText();
+        }
+
+        function updateUIText() {
+            document.querySelector('.lang-mission').innerText = dictionary.mission[lang];
+            document.querySelector('.lang-hint-btn').innerText = dictionary.hintBtn[lang];
+            document.querySelector('.lang-run').innerText = dictionary.run[lang];
+            document.querySelector('.lang-failed').innerText = dictionary.failed[lang];
+            document.querySelector('.lang-awesome').innerText = dictionary.awesome[lang];
+            document.querySelector('.lang-success-msg').innerText = dictionary.successMsg[lang];
+            document.querySelector('.lang-next').innerText = dictionary.next[lang];
+            document.querySelector('.lang-db-source').innerText = dictionary.dbSource[lang];
+            document.querySelector('.lang-result').innerText = dictionary.result[lang];
+            document.querySelector('.lang-empty-state').innerText = dictionary.emptyState[lang];
+            document.querySelector('.lang-why').innerText = dictionary.why[lang];
+        }
+
+        function toggleLevelMenu() {
+            const menu = document.getElementById('levelMenu');
+            menu.classList.toggle('hidden');
+            if (!menu.classList.contains('hidden')) {
+                menu.innerHTML = levels.map((l, i) => `
+                    <button onclick="loadLevel(${i})" class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-700 border-b border-slate-700/50 last:border-0 ${i === currentLevelIndex ? 'text-blue-400 bg-slate-700/50' : 'text-slate-300'}">
+                        ${i+1}. ${l.title[lang]}
+                        ${i === currentLevelIndex ? '✔' : ''}
+                    </button>
+                `).join('');
+            }
+        }
+
+        // Helper for simple markdown
+        function markedToHtml(text) {
+            // Converts **bold** to <strong>bold</strong>
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+
+        // --- CHANGELOG ---
+        /*
+          [2025-02-14] - Initial Implementation of World 1 (Levels 1-3) & AI Roadmap.
+        */
+    </script>
+</body>
+</html>
