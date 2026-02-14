@@ -1,99 +1,99 @@
 # SQL Academy: Master SQL from Zero to Hero
 
-SQL Academy adalah platform pembelajaran SQL interaktif berbasis browser yang dirancang untuk menghapus hambatan belajar. Tanpa server, tanpa login, dan 100% gratis selamanya.
+SQL Academy is an interactive, browser-based SQL learning platform designed to remove learning barriers. No server, no login, and 100% free forever.
 
-"Bahasa data tidak seharusnya dibatasi oleh biaya atau kendala bahasa. SQL untuk semua orang."
+"The language of data should not be restricted by cost or language barriers. SQL for everyone."
 
-🌟 Kenapa SQL Academy Berbeda?
+🌟 Why SQL Academy?
 
-Sebagian besar platform belajar SQL yang bagus terkunci di balik paywall atau mengharuskan instalasi database yang rumit. SQL Academy mengubah itu:
+Most high-quality SQL learning platforms are locked behind a paywall or require complex database installations. SQL Academy changes that:
 
-✅ Full Interactive: Tulis dan jalankan query SQL sungguhan langsung di browser.
+✅ Fully Interactive: Write and execute real SQL queries directly in your browser.
 
-✅ Real-Time Visual Feedback: Lihat perbandingan database sumber dan hasil query secara berdampingan.
+✅ Real-Time Visual Feedback: View the source database and your query results side-by-side.
 
-✅ Bilingual Support (ID/EN): Kurikulum lengkap tersedia dalam Bahasa Indonesia dan Inggris.
+✅ Bilingual Support (ID/EN): The entire curriculum is available in both Indonesian and English.
 
-✅ Gamified Progression: 35 level tantangan yang dibagi ke dalam 10 "Dunia" (Worlds).
+✅ Gamified Progression: 35 challenging levels divided into 10 "Worlds."
 
-✅ Smart Logic: Mencegah kesalahan fatal (seperti UPDATE tanpa WHERE) dengan peringatan edukatif.
+✅ Smart Logic: Prevents fatal mistakes (like UPDATE without WHERE) with educational warnings.
 
-✅ 100% Client-Side: Berjalan menggunakan AlaSQL dan Tailwind CSS. Ringan dan cepat.
+✅ 100% Client-Side: Runs using AlaSQL and Tailwind CSS. Lightweight and fast.
 
-✅ Offline Ready: Bisa diunduh dan dijalankan tanpa koneksi internet sama sekali.
+✅ Offline Ready: Can be downloaded and run without any internet connection.
 
-🗺️ Kurikulum (The 10 Worlds)
+🗺️ Curriculum (The 10 Worlds)
 
-Aplikasi ini membimbing kamu dari nol hingga tingkat Grandmaster:
+This app guides you from zero to a Grandmaster level:
 
-World 1: The Reader - Dasar-dasar SELECT dan pengambilan kolom.
+World 1: The Reader - SELECT basics and column retrieval.
 
-World 2: The Filter - Logika penyaringan menggunakan WHERE, AND, OR, LIKE, dan BETWEEN.
+World 2: The Filter - Filtering logic using WHERE, AND, OR, LIKE, and BETWEEN.
 
-World 3: The Manager - Operasi CRUD (INSERT, UPDATE, DELETE) dan manajemen risiko.
+World 3: The Manager - CRUD operations (INSERT, UPDATE, DELETE) and risk management.
 
-World 4: The Analyst - Fungsi agregasi seperti COUNT, SUM, AVG, dan GROUP BY.
+World 4: The Analyst - Aggregation functions like COUNT, SUM, AVG, and GROUP BY.
 
-World 5: The Architect - Menggabungkan tabel dengan INNER JOIN dan LEFT JOIN.
+World 5: The Architect - Joining tables with INNER JOIN and LEFT JOIN.
 
-World 6: The Nested - Menguasai Subqueries (query di dalam query).
+World 6: The Nested - Mastering Subqueries (queries within queries).
 
-World 7: The Modernist - Menulis query rapi dengan CTE (WITH clause).
+World 7: The Modernist - Writing clean queries with CTEs (WITH clause).
 
-World 8: The Genius - Kekuatan tingkat tinggi dengan Window Functions (RANK, OVER, PARTITION BY).
+World 8: The Genius - High-level power with Window Functions (RANK, OVER, PARTITION BY).
 
-World 9: The Optimizer - Dasar performa dengan DISTINCT dan LIMIT.
+World 9: The Optimizer - Performance basics with DISTINCT and LIMIT.
 
-World 10: The Grandmaster - Logika kompleks dengan CASE WHEN, HAVING, dan pengolahan string.
+World 10: The Grandmaster - Complex logic with CASE WHEN, HAVING, and string processing.
 
-🛠️ Teknologi yang Digunakan
+🛠️ Built With
 
-Proyek ini adalah bukti kekuatan kolaborasi Satu Manusia + Multi-AI:
+This project is a testament to the power of One Human + Multi-AI collaboration:
 
-🧠 GPT: Desain konsep pembelajaran.
+🧠 GPT: Learning concept design.
 
-♊ Gemini: Arsitektur kode dan pengembangan aplikasi.
+♊ Gemini: Code architecture and application development.
 
-🎨 Claude: Struktur kurikulum dan penyempurnaan UI.
+🎨 Claude: Curriculum structure and UI refinement.
 
-⚡ AlaSQL: Engine database SQL berbasis JavaScript.
+⚡ AlaSQL: JavaScript-based SQL database engine.
 
-🌊 Tailwind CSS: Desain antarmuka modern dan responsif.
+🌊 Tailwind CSS: Modern and responsive interface design.
 
-🚀 Cara Menggunakan
+🚀 How to Use
 
-Jalankan Secara Online
+Run Online
 
-Cukup buka tautan berikut di browser kamu:
+Simply open the following link in your browser:
 🔗 https://anggaconni.github.io/Learn_SQL/
 
-Jalankan Secara Offline (Cara Download)
+Run Offline (How to Download)
 
-Kamu bisa memiliki aplikasi ini secara pribadi:
+You can own this application personally:
 
-Buka tautan di atas.
+Open the link above.
 
-Klik kanan di mana saja pada halaman.
+Right-click anywhere on the page.
 
-Pilih "Save As..." (Simpan Sebagai...).
+Select "Save As..."
 
-Pilih format "Webpage, HTML Only".
+Choose the format "Webpage, HTML Only".
 
-Selesai! Klik dua kali file tersebut kapan saja untuk belajar tanpa internet.
+Done! Double-click the file anytime to learn without internet.
 
-📈 AI Roadmap (Untuk Pengembang AI Selanjutnya)
+📈 AI Roadmap (For Future AI Developers)
 
-Proyek ini didesain untuk terus berkembang. Jika Anda adalah AI yang diminta untuk memperbarui aplikasi ini, berikut adalah prioritas pengembangan selanjutnya:
+This project is designed to evolve. If you are an AI tasked with updating this app, here are the next development priorities:
 
 [ ] World 11: Schema Design (CREATE TABLE, ALTER, DROP).
 
 [ ] World 12: Constraints (PRIMARY KEY, FOREIGN KEY, NOT NULL).
 
-[ ] World 13: Advanced Wizardry (Pengolahan JSON dalam SQL & Recursive CTEs).
+[ ] World 13: Advanced Wizardry (JSON processing in SQL & Recursive CTEs).
 
-📄 Lisensi
+📄 License
 
-Proyek ini dirilis di bawah Lisensi MIT. Bebas digunakan, dipelajari, dan disebarluaskan untuk kemajuan literasi data global.
+This project is released under the MIT License. Free to use, study, and distribute for the advancement of global data literacy.
 
-Dibuat dengan ❤️ untuk komunitas data.
+Made with ❤️ for the data community.
 Happy Querying!
